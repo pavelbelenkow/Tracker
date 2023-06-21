@@ -57,7 +57,6 @@
 			isa = PBXGroup;
 			children = (
 				59C918DD2A3CF27100AA0FDD /* Assets.xcassets */,
-				59C918E22A3CF27100AA0FDD /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -86,6 +85,7 @@
 				59C918D82A3CF27100AA0FDD /* ViewController.swift */,
 				59C918DA2A3CF27100AA0FDD /* Main.storyboard */,
 				59C918DF2A3CF27100AA0FDD /* LaunchScreen.storyboard */,
+				59C918E22A3CF27100AA0FDD /* Info.plist */,
 				5983E3A72A433AB0005807CB /* Helpers */,
 				5983E3AC2A4350B9005807CB /* Resources */,
 			);
