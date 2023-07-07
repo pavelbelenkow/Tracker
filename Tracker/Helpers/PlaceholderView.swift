@@ -1,0 +1,70 @@
+//
+//  PlaceholderView.swift
+//  Tracker
+//
+//  Created by Pavel Belenkow on 29.06.2023.
+//
+
+import UIKit
+
+// MARK: - PlaceholderView Class
+
+final class PlaceholderView: UIView {
+    
+    // MARK: - Properties
+    
+    private let placeholderImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private let placeholderTitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.TrackerFont.medium12
+        label.textColor = UIColor.TrackerColor.black
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.preferredMaxLayoutWidth = 200
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    // MARK: - Initializers
+    
+    init(image: UIImage, title: String) {
+        super.init(frame: .zero)
+        
+        placeholderImageView.image = image
+        placeholderTitleLabel.text = title
+        
+        addPlaceholderImageView()
+        addPlaceholderTitleLabel()
+        
+        translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Methods
+    
+    private func addPlaceholderImageView() {
+        self.addSubview(placeholderImageView)
+        
+        NSLayoutConstraint.activate([
+            placeholderImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+    }
+    
+    private func addPlaceholderTitleLabel() {
+        self.addSubview(placeholderTitleLabel)
+        
+        NSLayoutConstraint.activate([
+            placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
+            placeholderTitleLabel.centerXAnchor.constraint(equalTo: placeholderImageView.centerXAnchor)
+        ])
+    }
+}
