@@ -9,31 +9,12 @@ import UIKit
 
 extension UIFont {
     enum TrackerFont {
-        case regular17
-        case medium10
-        case medium12
-        case medium16
-        case bold19
-        case bold32
-        case bold34
-        
-        var value: UIFont {
-            switch self {
-            case .regular17:
-                return UIFont.systemFont(ofSize: 17)
-            case .medium10:
-                return UIFont.systemFont(ofSize: 10, weight: .medium)
-            case .medium12:
-                return UIFont.systemFont(ofSize: 12, weight: .medium)
-            case .medium16:
-                return UIFont.systemFont(ofSize: 16, weight: .medium)
-            case .bold19:
-                return UIFont.boldSystemFont(ofSize: 19)
-            case .bold32:
-                return UIFont.boldSystemFont(ofSize: 32)
-            case .bold34:
-                return UIFont.boldSystemFont(ofSize: 34)
-            }
-        }
+        static let regular17 = UIFont.systemFont(ofSize: 17)
+        static let medium10 = UIFont.systemFont(ofSize: 10, weight: .medium)
+        static let medium12 = UIFont.systemFont(ofSize: 12, weight: .medium)
+        static let medium16 = UIFont.systemFont(ofSize: 16, weight: .medium)
+        static let bold19 = UIFont.boldSystemFont(ofSize: 19)
+        static let bold32 = UIFont.boldSystemFont(ofSize: 32)
+        static let bold34 = UIFont.boldSystemFont(ofSize: 34)
     }
 }
