@@ -296,6 +296,11 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
         }
     }
     
+    func getSelectedDate() -> Date? {
+        currentDate = datePicker.date
+        return currentDate
+    }
+    
     func updateTrackers() {
         reloadData()
         collectionView.reloadData()

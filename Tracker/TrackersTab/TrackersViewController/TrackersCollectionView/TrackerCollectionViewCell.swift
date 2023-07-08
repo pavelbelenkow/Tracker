@@ -10,6 +10,7 @@ import UIKit
 // MARK: - Protocols
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
+    func getSelectedDate() -> Date?
     func updateTrackers()
     func completedTracker(id: UUID, at indexPath: IndexPath)
     func uncompletedTracker(id: UUID, at indexPath: IndexPath)
@@ -88,6 +89,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    private let currentDate: Date? = nil
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
     private var indexPath: IndexPath?
@@ -103,6 +105,36 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         addTrackerTitleLabel()
         addCounterDayLabel()
         addAppendDayButton()
+    }
+    
+    private func getDaysText(_ completedDays: Int) -> String {
+        let lastTwoDigits = completedDays % 100
+        
+        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
+            return "\(completedDays) дней"
+        } else {
+            switch completedDays % 10 {
+            case 1:
+                return "\(completedDays) день"
+            case 2...4:
+                return "\(completedDays) дня"
+            default:
+                return "\(completedDays) дней"
+            }
+        }
+    }
+    
+    private func checkCompletedToday() {
+        let opacity: Float = isCompletedToday ? 0.3 : 1.0
+        let image = isCompletedToday ? doneImage : plusImage
+        
+        appendDayButton.setImage(image, for: .normal)
+        appendDayButton.layer.opacity = opacity
+    }
+    
+    private func checkDate() {
+        let selectedDate = delegate?.getSelectedDate() ?? Date()
+        appendDayButton.isEnabled = selectedDate <= currentDate ?? Date()
     }
     
     func configure(
@@ -124,16 +156,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         trackerTitleLabel.text = tracker.title
         emojiLabel.text = tracker.emoji
         
-        let wordDay = completedDays
-        counterDayLabel.text = "\(wordDay) дней"
+        let daysText = getDaysText(completedDays)
+        counterDayLabel.text = daysText
         
-        if isCompletedToday {
-            appendDayButton.setImage(doneImage, for: .normal)
-            appendDayButton.layer.opacity = 0.3
-        } else {
-            appendDayButton.layer.opacity = 1.0
-            appendDayButton.setImage(plusImage, for: .normal)
-        }
+        checkCompletedToday()
+        checkDate()
     }
     
     // MARK: - Objective-C methods
