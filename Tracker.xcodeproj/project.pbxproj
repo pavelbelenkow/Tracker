@@ -184,19 +184,19 @@
 			isa = PBXGroup;
 			children = (
 				5945AD332A59F8B100375D22 /* IrregularTrackerViewController.swift */,
-				5945AD352A5A00C600375D22 /* IIrregularTrackerTableView */,
+				5945AD352A5A00C600375D22 /* IrregularTrackerTableView */,
 			);
 			path = IrregularTrackerViewController;
 			sourceTree = "<group>";
 		};
-		5945AD352A5A00C600375D22 /* IIrregularTrackerTableView */ = {
+		5945AD352A5A00C600375D22 /* IrregularTrackerTableView */ = {
 			isa = PBXGroup;
 			children = (
 				5945AD362A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift */,
 				5945AD382A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift */,
 				5945AD3A2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift */,
 			);
-			path = IIrregularTrackerTableView;
+			path = IrregularTrackerTableView;
 			sourceTree = "<group>";
 		};
 		594E6AB92A522E260012E691 /* CategoryViewController */ = {
@@ -282,10 +282,10 @@
 				5942AA1E2A4C68AA00EC460F /* TrackersViewController */,
 				597CEEF82A574F4A00671F13 /* CreateTrackerViewController */,
 				5942AA2B2A4C709100EC460F /* RegularTrackerViewController */,
+				5945AD322A59F86100375D22 /* IrregularTrackerViewController */,
 				594E6AB92A522E260012E691 /* CategoryViewController */,
 				591824152A54CDBE00AFC754 /* CreateCategoryViewController */,
 				591824162A54CDD600AFC754 /* ScheduleViewController */,
-				5945AD322A59F86100375D22 /* IrregularTrackerViewController */,
 			);
 			path = TrackersTab;
 			sourceTree = "<group>";
