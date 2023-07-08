@@ -179,7 +179,11 @@ final class RegularTrackerViewController: UIViewController {
     }
     
     func getScheduleSubtitle(from selectedWeekdays: [Weekday]) -> String {
-        selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
+        if selectedWeekdays == Weekday.allCases {
+            return "Каждый день"
+        } else {
+            return selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
+        }
     }
     
     // MARK: - Objective-C methods
