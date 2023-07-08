@@ -17,6 +17,10 @@
 		5942AA312A4C727C00EC460F /* RegularTrackerTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5942AA302A4C727C00EC460F /* RegularTrackerTableViewDataSource.swift */; };
 		5942AA332A4C729200EC460F /* RegularTrackerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5942AA322A4C729200EC460F /* RegularTrackerTableViewDelegate.swift */; };
 		5942AA352A4C7BAB00EC460F /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5942AA342A4C7BAB00EC460F /* CategoryViewController.swift */; };
+		5945AD342A59F8B100375D22 /* IrregularTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5945AD332A59F8B100375D22 /* IrregularTrackerViewController.swift */; };
+		5945AD372A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5945AD362A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift */; };
+		5945AD392A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5945AD382A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift */; };
+		5945AD3B2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5945AD3A2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift */; };
 		594E6AAF2A519C490012E691 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AAE2A519C490012E691 /* ScheduleViewController.swift */; };
 		594E6AB12A51A0CC0012E691 /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AB02A51A0CC0012E691 /* UIButton+Extensions.swift */; };
 		594E6AB32A51ACD10012E691 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AB22A51ACD10012E691 /* UITextField+Extensions.swift */; };
@@ -57,6 +61,10 @@
 		5942AA302A4C727C00EC460F /* RegularTrackerTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularTrackerTableViewDataSource.swift; sourceTree = "<group>"; };
 		5942AA322A4C729200EC460F /* RegularTrackerTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularTrackerTableViewDelegate.swift; sourceTree = "<group>"; };
 		5942AA342A4C7BAB00EC460F /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		5945AD332A59F8B100375D22 /* IrregularTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularTrackerViewController.swift; sourceTree = "<group>"; };
+		5945AD362A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularTrackerTableViewSubtitleCell.swift; sourceTree = "<group>"; };
+		5945AD382A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularTrackerTableViewDataSource.swift; sourceTree = "<group>"; };
+		5945AD3A2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularTrackerTableViewDelegate.swift; sourceTree = "<group>"; };
 		594E6AAE2A519C490012E691 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		594E6AB02A51A0CC0012E691 /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
 		594E6AB22A51ACD10012E691 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
@@ -172,6 +180,25 @@
 			path = TrackerSearchBar;
 			sourceTree = "<group>";
 		};
+		5945AD322A59F86100375D22 /* IrregularTrackerViewController */ = {
+			isa = PBXGroup;
+			children = (
+				5945AD332A59F8B100375D22 /* IrregularTrackerViewController.swift */,
+				5945AD352A5A00C600375D22 /* IIrregularTrackerTableView */,
+			);
+			path = IrregularTrackerViewController;
+			sourceTree = "<group>";
+		};
+		5945AD352A5A00C600375D22 /* IIrregularTrackerTableView */ = {
+			isa = PBXGroup;
+			children = (
+				5945AD362A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift */,
+				5945AD382A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift */,
+				5945AD3A2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift */,
+			);
+			path = IIrregularTrackerTableView;
+			sourceTree = "<group>";
+		};
 		594E6AB92A522E260012E691 /* CategoryViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +285,7 @@
 				594E6AB92A522E260012E691 /* CategoryViewController */,
 				591824152A54CDBE00AFC754 /* CreateCategoryViewController */,
 				591824162A54CDD600AFC754 /* ScheduleViewController */,
+				5945AD322A59F86100375D22 /* IrregularTrackerViewController */,
 			);
 			path = TrackersTab;
 			sourceTree = "<group>";
@@ -379,8 +407,12 @@
 				59C918D92A3CF27100AA0FDD /* TrackersViewController.swift in Sources */,
 				59C918D52A3CF27100AA0FDD /* AppDelegate.swift in Sources */,
 				5983E3B32A43709C005807CB /* TrackerCategory.swift in Sources */,
+				5945AD3B2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift in Sources */,
+				5945AD372A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift in Sources */,
 				5969A1EF2A4DC4F700627BEF /* DataManager.swift in Sources */,
 				59CF12922A4618CE002A5BD0 /* TabBarController.swift in Sources */,
+				5945AD342A59F8B100375D22 /* IrregularTrackerViewController.swift in Sources */,
+				5945AD392A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift in Sources */,
 				5942AA242A4C6A0A00EC460F /* TrackerCollectionViewCell.swift in Sources */,
 				59C918D72A3CF27100AA0FDD /* SceneDelegate.swift in Sources */,
 				594E6AB12A51A0CC0012E691 /* UIButton+Extensions.swift in Sources */,

@@ -51,7 +51,11 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc private func irregularTrackerButtonTapped() {
-        print("Irregular tracker button tapped")
+        let irregularTrackerViewController = IrregularTrackerViewController()
+        irregularTrackerViewController.delegate = delegate
+        
+        let navigationController = UINavigationController(rootViewController: irregularTrackerViewController)
+        present(navigationController, animated: true)
     }
 }
 
