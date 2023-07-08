@@ -32,7 +32,7 @@ final class TrackersViewController: UIViewController {
         datePicker.addTarget(self, action: #selector(datePickerDateChanged), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.heightAnchor.constraint(equalToConstant: 34).isActive = true
-        datePicker.widthAnchor.constraint(equalToConstant: 109).isActive = true
+        datePicker.widthAnchor.constraint(equalToConstant: 110).isActive = true
         return datePicker
     }()
     
