@@ -24,14 +24,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "tracker"
     
-    private let trackerView: UIView = {
+    private lazy var trackerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private let emojiLabel: UILabel = {
+    private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.TrackerFont.medium16
         label.textAlignment = .center
@@ -42,7 +42,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let trackerTitleLabel: UILabel = {
+    private lazy var trackerTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.TrackerColor.white
         label.font = UIFont.TrackerFont.medium12
@@ -51,7 +51,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fill
@@ -60,7 +60,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return stack
     }()
     
-    private let counterDayLabel: UILabel = {
+    private lazy var counterDayLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.TrackerColor.black
         label.font = UIFont.TrackerFont.medium12
@@ -68,13 +68,13 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let plusImage: UIImage = {
+    private lazy var plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
         let image = UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
         return image
     }()
     
-    private let doneImage: UIImage = {
+    private lazy var doneImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 12)
         let image = UIImage(systemName: "checkmark", withConfiguration: pointSize) ?? UIImage()
         return image

@@ -13,13 +13,13 @@ final class PlaceholderView: UIView {
     
     // MARK: - Properties
     
-    private let placeholderImageView: UIImageView = {
+    private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let placeholderTitleLabel: UILabel = {
+    private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.TrackerFont.medium12
         label.textColor = UIColor.TrackerColor.black
@@ -54,8 +54,8 @@ final class PlaceholderView: UIView {
         self.addSubview(placeholderImageView)
         
         NSLayoutConstraint.activate([
-            placeholderImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            placeholderImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            placeholderImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     

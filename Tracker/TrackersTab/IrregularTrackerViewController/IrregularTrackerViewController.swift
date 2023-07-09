@@ -13,7 +13,7 @@ final class IrregularTrackerViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 8
@@ -29,7 +29,7 @@ final class IrregularTrackerViewController: UIViewController {
         return textField
     }()
     
-    private let symbolsConstraintLabel: UILabel = {
+    private lazy var symbolsConstraintLabel: UILabel = {
         let label = UILabel()
         label.text = "Ограничение 38 символов"
         label.textColor = UIColor.TrackerColor.red
@@ -54,7 +54,7 @@ final class IrregularTrackerViewController: UIViewController {
         return tableView
     }()
     
-    private let buttonsStackView: UIStackView = {
+    private lazy var buttonsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         view.spacing = 8

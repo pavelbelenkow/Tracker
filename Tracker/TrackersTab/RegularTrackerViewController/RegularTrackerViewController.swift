@@ -20,7 +20,7 @@ final class RegularTrackerViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .fill
@@ -36,7 +36,7 @@ final class RegularTrackerViewController: UIViewController {
         return textField
     }()
     
-    private let symbolsConstraintLabel: UILabel = {
+    private lazy var symbolsConstraintLabel: UILabel = {
         let label = UILabel()
         label.text = "Ограничение 38 символов"
         label.textColor = UIColor.TrackerColor.red
@@ -60,7 +60,7 @@ final class RegularTrackerViewController: UIViewController {
         return tableView
     }()
     
-    private let buttonsStackView: UIStackView = {
+    private lazy var buttonsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         view.spacing = 8

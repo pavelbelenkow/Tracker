@@ -15,7 +15,7 @@ final class TrackerCollectionViewSectionHeader: UICollectionReusableView {
     
     static let reuseIdentifier = "header"
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.TrackerFont.bold19
         label.textColor = UIColor.TrackerColor.black

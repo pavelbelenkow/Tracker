@@ -13,13 +13,11 @@ final class StatisticsViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let placeholderView: UIView = {
-        let view = PlaceholderView(
+    private lazy var placeholderView: UIView = {
+        PlaceholderView(
             image: UIImage.TrackerIcon.emptyStatistics,
             title: "Анализировать пока нечего"
         )
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
     }()
     
     // MARK: - Lifecycle
