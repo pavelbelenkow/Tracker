@@ -12,8 +12,8 @@ import UIKit
 protocol TrackerCollectionViewCellDelegate: AnyObject {
     func getSelectedDate() -> Date?
     func updateTrackers()
-    func completedTracker(id: UUID, at indexPath: IndexPath)
-    func uncompletedTracker(id: UUID, at indexPath: IndexPath)
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
 }
 
 // MARK: - Tracker CollectionViewCell Class
@@ -172,9 +172,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
         
         if isCompletedToday {
-            delegate?.uncompletedTracker(id: trackerId, at: indexPath)
+            delegate?.uncompleteTracker(id: trackerId, at: indexPath)
         } else {
-            delegate?.completedTracker(id: trackerId, at: indexPath)
+            delegate?.completeTracker(id: trackerId, at: indexPath)
         }
     }
 }

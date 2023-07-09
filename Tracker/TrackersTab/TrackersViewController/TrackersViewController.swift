@@ -38,7 +38,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchBar: TrackerSearchBar = {
         let searchBar = TrackerSearchBar()
-        searchBar.viewController = self
+        searchBar.delegate = self
         searchBar.searchTextField.addTarget(self, action: #selector(searchBarTapped), for: .editingDidEndOnExit)
         return searchBar
     }()
@@ -283,6 +283,31 @@ private extension TrackersViewController {
     }
 }
 
+// MARK: - SearchBar Delegate methods
+
+extension TrackersViewController: UISearchBarDelegate {
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.setShowsCancelButton(false, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = nil
+        reloadVisibleCategories()
+        searchBar.setShowsCancelButton(false, animated: true)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        reloadVisibleCategories()
+        searchBar.resignFirstResponder()
+    }
+}
+
 // MARK: Delegate methods
 
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
@@ -310,7 +335,7 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
         collectionView.reloadData()
     }
     
-    func completedTracker(id: UUID, at indexPath: IndexPath) {
+    func completeTracker(id: UUID, at indexPath: IndexPath) {
         currentDate = datePicker.date
         
         let trackerRecord = TrackerRecord(trackerId: id, date: currentDate ?? Date())
@@ -319,7 +344,7 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
         collectionView.reloadItems(at: [indexPath])
     }
     
-    func uncompletedTracker(id: UUID, at indexPath: IndexPath) {
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
         completedTrackers.removeAll { trackerRecord in
             isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
         }
