@@ -84,9 +84,9 @@ final class TrackersViewController: UIViewController {
     
     private lazy var filteredPlaceholderView: UIView = {
         PlaceholderView(
-        image: UIImage.TrackerIcon.notFounded,
-        title: "Ничего не найдено"
-    )
+            image: UIImage.TrackerIcon.notFounded,
+            title: "Ничего не найдено"
+        )
     }()
     
     private let dataManager = DataManager.shared
