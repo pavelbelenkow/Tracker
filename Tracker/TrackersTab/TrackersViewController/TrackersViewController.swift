@@ -171,7 +171,7 @@ final class TrackersViewController: UIViewController {
         }
     }
     
-    func reloadVisibleCategories() {
+    private func reloadVisibleCategories() {
         visibleCategories = filterCategories()
         updatePlaceholderViews()
         collectionView.reloadData()

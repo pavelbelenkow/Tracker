@@ -134,6 +134,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     private func checkDate() {
         let selectedDate = delegate?.getSelectedDate() ?? Date()
+        let opacity: Float = selectedDate <= currentDate ?? Date() ? 1.0 : 0.3
+        
+        trackerView.layer.opacity = opacity
+        stackView.layer.opacity = opacity
+        
         appendDayButton.isEnabled = selectedDate <= currentDate ?? Date()
     }
     

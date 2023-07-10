@@ -80,7 +80,6 @@ final class RegularTrackerViewController: UIViewController {
         let button = UIButton(type: .system)
         button.configure(with: .createButton, for: "Создать")
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
-        button.isEnabled = false
         return button
     }()
     
@@ -115,6 +114,8 @@ final class RegularTrackerViewController: UIViewController {
         tableViewDelegate = RegularTrackerTableViewDelegate(viewController: self)
         
         addSubviews()
+        
+        updateCreateButton()
     }
     
     // MARK: - Methods
@@ -124,6 +125,16 @@ final class RegularTrackerViewController: UIViewController {
         addStackView()
         addTableView()
         addButtonsStackView()
+    }
+    
+    private func updateCreateButton() {
+        let isButtonEnabled =
+        !(trackerTitleTextField.text?.isEmpty ?? false) &&
+        !categorySubtitle.isEmpty &&
+        !scheduleSubtitle.isEmpty
+        
+        createButton.isEnabled = isButtonEnabled
+        createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
     }
     
     private func createTracker() {
@@ -258,11 +269,18 @@ extension RegularTrackerViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
+        updateCreateButton()
         view.endEditing(true)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        updateCreateButton()
+        return true
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        updateCreateButton()
         return true
     }
     
@@ -278,13 +296,7 @@ extension RegularTrackerViewController: UITextFieldDelegate {
         let newLength = text.count + string.count - range.length
         symbolsConstraintLabel.isHidden = (newLength <= 38)
         
-        if newLength >= 1 {
-            createButton.isEnabled = true
-            createButton.backgroundColor = UIColor.TrackerColor.black
-        } else {
-            createButton.isEnabled = false
-            createButton.backgroundColor = UIColor.TrackerColor.gray
-        }
+        updateCreateButton()
         
         return newLength <= 38
     }
@@ -300,6 +312,8 @@ extension RegularTrackerViewController: UpdateSubtitleDelegate {
         
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
+        
+        updateCreateButton()
     }
     
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int : Bool]) {
@@ -308,5 +322,7 @@ extension RegularTrackerViewController: UpdateSubtitleDelegate {
         
         let indexPath = IndexPath(row: 1, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
+        
+        updateCreateButton()
     }
 }
