@@ -74,7 +74,6 @@ final class IrregularTrackerViewController: UIViewController {
         let button = UIButton(type: .system)
         button.configure(with: .createButton, for: "Создать")
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
-        button.isEnabled = false
         return button
     }()
     
@@ -109,6 +108,8 @@ final class IrregularTrackerViewController: UIViewController {
         tableViewDelegate = IrregularTrackerTableViewDelegate(viewController: self)
         
         addSubviews()
+        
+        updateCreateButton()
     }
     
     // MARK: - Methods
@@ -118,6 +119,15 @@ final class IrregularTrackerViewController: UIViewController {
         addStackView()
         addTableView()
         addButtonsStackView()
+    }
+    
+    private func updateCreateButton() {
+        let isButtonEnabled =
+        !(trackerTitleTextField.text?.isEmpty ?? false) &&
+        !categorySubtitle.isEmpty
+        
+        createButton.isEnabled = isButtonEnabled
+        createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
     }
     
     private func createTracker() {
@@ -236,11 +246,18 @@ extension IrregularTrackerViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
+        updateCreateButton()
         view.endEditing(true)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        updateCreateButton()
+        return true
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        updateCreateButton()
         return true
     }
     
@@ -256,13 +273,7 @@ extension IrregularTrackerViewController: UITextFieldDelegate {
         let newLength = text.count + string.count - range.length
         symbolsConstraintLabel.isHidden = (newLength <= 38)
         
-        if newLength >= 1 {
-            createButton.isEnabled = true
-            createButton.backgroundColor = UIColor.TrackerColor.black
-        } else {
-            createButton.isEnabled = false
-            createButton.backgroundColor = UIColor.TrackerColor.gray
-        }
+       updateCreateButton()
         
         return newLength <= 38
     }
@@ -278,6 +289,8 @@ extension IrregularTrackerViewController: UpdateSubtitleDelegate {
         
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
+        
+        updateCreateButton()
     }
     
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int : Bool]) {}
