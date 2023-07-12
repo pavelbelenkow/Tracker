@@ -9,9 +9,11 @@ import UIKit
 
 // MARK: - Protocols
 
-protocol UpdateSubtitleDelegate: AnyObject {
+protocol UpdateTrackerInformationDelegate: AnyObject {
     func updateCategorySubtitle(from string: String?, at indexPath: IndexPath?)
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int: Bool])
+    func updateSelectedEmoji(_ emoji: String)
+    func updateSelectedColor(_ color: UIColor)
 }
 
 // MARK: - Regular Tracker ViewController Class
@@ -19,6 +21,19 @@ protocol UpdateSubtitleDelegate: AnyObject {
 final class RegularTrackerViewController: UIViewController {
     
     // MARK: - Properties
+    
+    private lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.showsVerticalScrollIndicator = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
@@ -48,16 +63,24 @@ final class RegularTrackerViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.rowHeight = 75
-        tableView.dataSource = tableViewDataSource
-        tableView.delegate = tableViewDelegate
-        tableView.register(
+        let view = UITableView()
+        view.rowHeight = 75
+        view.dataSource = tableViewDataSource
+        view.delegate = tableViewDelegate
+        view.register(
             RegularTrackerTableViewSubtitleCell.self,
             forCellReuseIdentifier: RegularTrackerTableViewSubtitleCell.reuseIdentifier
         )
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+        view.isScrollEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let view = EmojiColorCollectionView(frame: .zero, collectionViewLayout: layout)
+        view.selectionDelegate = self
+        return view
     }()
     
     private lazy var buttonsStackView: UIStackView = {
@@ -85,18 +108,13 @@ final class RegularTrackerViewController: UIViewController {
     
     private let dataManager = DataManager.shared
     private let titleCells = ["Категория", "Расписание"]
-    private let colors = [
-        UIColor.TrackerColor.colorSelection1, UIColor.TrackerColor.colorSelection5,
-        UIColor.TrackerColor.colorSelection9, UIColor.TrackerColor.colorSelection16
-    ]
-    private let emojies = [
-        "❤️", "🚴‍♂️", "✍️", "👨🏻‍⚕️", "👻", "🥶"
-    ]
     
     private var trackerTitle = ""
     private var categorySubtitle = ""
     private var scheduleSubtitle: [Weekday] = []
     private var selectedWeekdays: [Int: Bool] = [:]
+    private var emoji: String = ""
+    private var color: UIColor?
     
     private var tableViewDataSource: RegularTrackerTableViewDataSource?
     private var tableViewDelegate: RegularTrackerTableViewDelegate?
@@ -122,8 +140,11 @@ final class RegularTrackerViewController: UIViewController {
     
     private func addSubviews() {
         addTopNavigationLabel()
+        addScrollView()
+        addContentView()
         addStackView()
         addTableView()
+        addCollectionView()
         addButtonsStackView()
     }
     
@@ -131,7 +152,9 @@ final class RegularTrackerViewController: UIViewController {
         let isButtonEnabled =
         !(trackerTitleTextField.text?.isEmpty ?? false) &&
         !categorySubtitle.isEmpty &&
-        !scheduleSubtitle.isEmpty
+        !scheduleSubtitle.isEmpty &&
+        !emoji.isEmpty &&
+        color != nil
         
         createButton.isEnabled = isButtonEnabled
         createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
@@ -145,8 +168,8 @@ final class RegularTrackerViewController: UIViewController {
         let newTracker = Tracker(
             id: UUID(),
             title: trackerTitle,
-            color: colors.randomElement() ?? UIColor(),
-            emoji: emojies.randomElement() ?? String(),
+            color: color ?? UIColor(),
+            emoji: emoji,
             schedule: scheduleSubtitle
         )
         
@@ -173,6 +196,16 @@ final class RegularTrackerViewController: UIViewController {
         }
     }
     
+    private func dismissViewControllers() {
+        var currentViewController = self.presentingViewController
+        
+        while currentViewController is UINavigationController {
+            currentViewController = currentViewController?.presentingViewController
+        }
+        
+        currentViewController?.dismiss(animated: true)
+    }
+    
     func getTitles() -> [String] {
         titleCells
     }
@@ -190,11 +223,8 @@ final class RegularTrackerViewController: UIViewController {
     }
     
     func getScheduleSubtitle(from selectedWeekdays: [Weekday]) -> String {
-        if selectedWeekdays == Weekday.allCases {
-            return "Каждый день"
-        } else {
-            return selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
-        }
+        selectedWeekdays == Weekday.allCases ?
+        "Каждый день" : selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
     }
     
     // MARK: - Objective-C methods
@@ -206,12 +236,7 @@ final class RegularTrackerViewController: UIViewController {
     @objc private func createButtonTapped() {
         createTracker()
         delegate?.updateTrackers()
-        
-        var currentViewController = self.presentingViewController
-        while currentViewController is UINavigationController {
-            currentViewController = currentViewController?.presentingViewController
-        }
-        currentViewController?.dismiss(animated: true)
+        dismissViewControllers()
     }
 }
 
@@ -227,38 +252,74 @@ private extension RegularTrackerViewController {
         ]
     }
     
+    func addScrollView() {
+        view.addSubview(scrollView)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    func addContentView() {
+        scrollView.addSubview(contentView)
+        
+        NSLayoutConstraint.activate([
+            contentView.widthAnchor.constraint(equalToConstant: view.frame.width),
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+        ])
+    }
+    
     func addStackView() {
-        view.addSubview(stackView)
+        contentView.addSubview(stackView)
         stackView.addArrangedSubview(trackerTitleTextField)
         stackView.addArrangedSubview(symbolsConstraintLabel)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
     
     func addTableView() {
-        view.addSubview(tableView)
+        contentView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.heightAnchor.constraint(equalToConstant: 150),
             tableView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 24),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
     
+    func addCollectionView() {
+        contentView.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32)
+        ])
+        
+        collectionView.layoutIfNeeded()
+        collectionView.heightAnchor.constraint(equalToConstant: collectionView.contentSize.height).isActive = true
+    }
+    
     func addButtonsStackView() {
-        view.addSubview(buttonsStackView)
+        contentView.addSubview(buttonsStackView)
         buttonsStackView.addArrangedSubview(cancelButton)
         buttonsStackView.addArrangedSubview(createButton)
         
         NSLayoutConstraint.activate([
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
-            buttonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            buttonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            buttonsStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -34),
+            buttonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
     }
 }
@@ -304,7 +365,7 @@ extension RegularTrackerViewController: UITextFieldDelegate {
 
 // MARK: - Delegate methods
 
-extension RegularTrackerViewController: UpdateSubtitleDelegate {
+extension RegularTrackerViewController: UpdateTrackerInformationDelegate {
     
     func updateCategorySubtitle(from string: String?, at indexPath: IndexPath?) {
         categorySubtitle = string ?? ""
@@ -323,6 +384,16 @@ extension RegularTrackerViewController: UpdateSubtitleDelegate {
         let indexPath = IndexPath(row: 1, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
         
+        updateCreateButton()
+    }
+    
+    func updateSelectedEmoji(_ emoji: String) {
+        self.emoji = emoji
+        updateCreateButton()
+    }
+    
+    func updateSelectedColor(_ color: UIColor) {
+        self.color = color
         updateCreateButton()
     }
 }

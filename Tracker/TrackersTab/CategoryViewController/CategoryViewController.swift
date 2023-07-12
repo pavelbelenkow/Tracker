@@ -15,6 +15,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var categoryTableView: UITableView = {
         let tableView = UITableView()
+        tableView.backgroundColor = .clear
         tableView.rowHeight = 75
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
@@ -49,7 +50,7 @@ final class CategoryViewController: UIViewController {
     private var tableViewDelegate: CategoryTableViewDelegate?
     
     var selectedIndexPath: IndexPath?
-    weak var delegate: UpdateSubtitleDelegate?
+    weak var delegate: UpdateTrackerInformationDelegate?
     
     // MARK: - Lifecycle
         

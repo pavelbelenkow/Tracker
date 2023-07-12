@@ -13,6 +13,19 @@ final class IrregularTrackerViewController: UIViewController {
     
     // MARK: - Properties
     
+    private lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.showsVerticalScrollIndicator = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -41,17 +54,25 @@ final class IrregularTrackerViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.rowHeight = 75
-        tableView.separatorStyle = .none
-        tableView.dataSource = tableViewDataSource
-        tableView.delegate = tableViewDelegate
-        tableView.register(
+        let view = UITableView()
+        view.rowHeight = 75
+        view.separatorStyle = .none
+        view.dataSource = tableViewDataSource
+        view.delegate = tableViewDelegate
+        view.register(
             IrregularTrackerTableViewSubtitleCell.self,
             forCellReuseIdentifier: IrregularTrackerTableViewSubtitleCell.reuseIdentifier
         )
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+        view.isScrollEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let view = EmojiColorCollectionView(frame: .zero, collectionViewLayout: layout)
+        view.selectionDelegate = self
+        return view
     }()
     
     private lazy var buttonsStackView: UIStackView = {
@@ -79,17 +100,12 @@ final class IrregularTrackerViewController: UIViewController {
     
     private let dataManager = DataManager.shared
     private let titleCell = ["Категория"]
-    private let colors = [
-        UIColor.TrackerColor.colorSelection1, UIColor.TrackerColor.colorSelection5,
-        UIColor.TrackerColor.colorSelection9, UIColor.TrackerColor.colorSelection16
-    ]
-    private let emojies = [
-        "❤️", "🚴‍♂️", "✍️", "👨🏻‍⚕️", "👻", "🥶"
-    ]
     
     private var trackerTitle = ""
     private var categorySubtitle = ""
     private var schedule: [Weekday] = Weekday.allCases
+    private var emoji: String = ""
+    private var color: UIColor?
     
     private var tableViewDataSource: IrregularTrackerTableViewDataSource?
     private var tableViewDelegate: IrregularTrackerTableViewDelegate?
@@ -116,15 +132,20 @@ final class IrregularTrackerViewController: UIViewController {
     
     private func addSubviews() {
         addTopNavigationLabel()
+        addScrollView()
+        addContentView()
         addStackView()
         addTableView()
+        addCollectionView()
         addButtonsStackView()
     }
     
     private func updateCreateButton() {
         let isButtonEnabled =
         !(trackerTitleTextField.text?.isEmpty ?? false) &&
-        !categorySubtitle.isEmpty
+        !categorySubtitle.isEmpty &&
+        !emoji.isEmpty &&
+        color != nil
         
         createButton.isEnabled = isButtonEnabled
         createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
@@ -138,8 +159,8 @@ final class IrregularTrackerViewController: UIViewController {
         let newTracker = Tracker(
             id: UUID(),
             title: trackerTitle,
-            color: colors.randomElement() ?? UIColor(),
-            emoji: emojies.randomElement() ?? String(),
+            color: color ?? UIColor(),
+            emoji: emoji,
             schedule: schedule
         )
         
@@ -166,6 +187,16 @@ final class IrregularTrackerViewController: UIViewController {
         }
     }
     
+    private func dismissViewControllers() {
+        var currentViewController = self.presentingViewController
+        
+        while currentViewController is UINavigationController {
+            currentViewController = currentViewController?.presentingViewController
+        }
+        
+        currentViewController?.dismiss(animated: true)
+    }
+    
     func getTitles() -> [String] {
         titleCell
     }
@@ -183,12 +214,7 @@ final class IrregularTrackerViewController: UIViewController {
     @objc private func createButtonTapped() {
         createTracker()
         delegate?.updateTrackers()
-        
-        var currentViewController = self.presentingViewController
-        while currentViewController is UINavigationController {
-            currentViewController = currentViewController?.presentingViewController
-        }
-        currentViewController?.dismiss(animated: true)
+        dismissViewControllers()
     }
 }
 
@@ -204,38 +230,74 @@ private extension IrregularTrackerViewController {
         ]
     }
     
+    func addScrollView() {
+        view.addSubview(scrollView)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    func addContentView() {
+        scrollView.addSubview(contentView)
+        
+        NSLayoutConstraint.activate([
+            contentView.widthAnchor.constraint(equalToConstant: view.frame.width),
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+        ])
+    }
+    
     func addStackView() {
-        view.addSubview(stackView)
+        contentView.addSubview(stackView)
         stackView.addArrangedSubview(trackerTitleTextField)
         stackView.addArrangedSubview(symbolsConstraintLabel)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
     
     func addTableView() {
-        view.addSubview(tableView)
+        contentView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.heightAnchor.constraint(equalToConstant: 75),
             tableView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 24),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
     
+    func addCollectionView() {
+        contentView.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32)
+        ])
+        
+        collectionView.layoutIfNeeded()
+        collectionView.heightAnchor.constraint(equalToConstant: collectionView.contentSize.height).isActive = true
+    }
+    
     func addButtonsStackView() {
-        view.addSubview(buttonsStackView)
+        contentView.addSubview(buttonsStackView)
         buttonsStackView.addArrangedSubview(cancelButton)
         buttonsStackView.addArrangedSubview(createButton)
         
         NSLayoutConstraint.activate([
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
-            buttonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            buttonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            buttonsStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -34),
+            buttonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
     }
 }
@@ -281,7 +343,7 @@ extension IrregularTrackerViewController: UITextFieldDelegate {
 
 // MARK: - Delegate methods
 
-extension IrregularTrackerViewController: UpdateSubtitleDelegate {
+extension IrregularTrackerViewController: UpdateTrackerInformationDelegate {
     
     func updateCategorySubtitle(from string: String?, at indexPath: IndexPath?) {
         categorySubtitle = string ?? ""
@@ -290,6 +352,16 @@ extension IrregularTrackerViewController: UpdateSubtitleDelegate {
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
         
+        updateCreateButton()
+    }
+    
+    func updateSelectedEmoji(_ emoji: String) {
+        self.emoji = emoji
+        updateCreateButton()
+    }
+    
+    func updateSelectedColor(_ color: UIColor) {
+        self.color = color
         updateCreateButton()
     }
     
