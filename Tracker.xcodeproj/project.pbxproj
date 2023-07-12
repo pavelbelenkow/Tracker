@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		590806102A5CDD5A00B0601D /* EmojiColorCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5908060F2A5CDD5A00B0601D /* EmojiColorCollectionView.swift */; };
+		590806122A5CE58B00B0601D /* TrackerEmoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590806112A5CE58B00B0601D /* TrackerEmoji.swift */; };
 		591824142A54A67200AFC754 /* RegularTrackerTableViewSubtitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591824132A54A67200AFC754 /* RegularTrackerTableViewSubtitleCell.swift */; };
 		5942AA222A4C69F300EC460F /* TrackerCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5942AA212A4C69F300EC460F /* TrackerCollectionViewDelegate.swift */; };
 		5942AA242A4C6A0A00EC460F /* TrackerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5942AA232A4C6A0A00EC460F /* TrackerCollectionViewCell.swift */; };
@@ -47,10 +49,15 @@
 		59CF12922A4618CE002A5BD0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CF12912A4618CE002A5BD0 /* TabBarController.swift */; };
 		59CF12942A4618E7002A5BD0 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CF12932A4618E7002A5BD0 /* StatisticsViewController.swift */; };
 		59DD99452A48BED4008406C5 /* Weekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DD99442A48BED4008406C5 /* Weekday.swift */; };
+		59E0A3CC2A5F6BE50012E32C /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0A3CB2A5F6BE50012E32C /* EmojiCell.swift */; };
+		59E0A3CE2A5F6C0E0012E32C /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0A3CD2A5F6C0E0012E32C /* ColorCell.swift */; };
+		59E0A3D02A5F6C1C0012E32C /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0A3CF2A5F6C1C0012E32C /* SectionHeader.swift */; };
 		59F967862A4E025700A40F15 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F967852A4E025700A40F15 /* GeometricParams.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5908060F2A5CDD5A00B0601D /* EmojiColorCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiColorCollectionView.swift; sourceTree = "<group>"; };
+		590806112A5CE58B00B0601D /* TrackerEmoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerEmoji.swift; sourceTree = "<group>"; };
 		591824132A54A67200AFC754 /* RegularTrackerTableViewSubtitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularTrackerTableViewSubtitleCell.swift; sourceTree = "<group>"; };
 		5942AA212A4C69F300EC460F /* TrackerCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewDelegate.swift; sourceTree = "<group>"; };
 		5942AA232A4C6A0A00EC460F /* TrackerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -93,6 +100,9 @@
 		59CF12912A4618CE002A5BD0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		59CF12932A4618E7002A5BD0 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		59DD99442A48BED4008406C5 /* Weekday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekday.swift; sourceTree = "<group>"; };
+		59E0A3CB2A5F6BE50012E32C /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
+		59E0A3CD2A5F6C0E0012E32C /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
+		59E0A3CF2A5F6C1C0012E32C /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		59F967852A4E025700A40F15 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,6 +117,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5908060E2A5CDD1D00B0601D /* EmojiColorCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				5908060F2A5CDD5A00B0601D /* EmojiColorCollectionView.swift */,
+				59E0A3CB2A5F6BE50012E32C /* EmojiCell.swift */,
+				59E0A3CD2A5F6C0E0012E32C /* ColorCell.swift */,
+				59E0A3CF2A5F6C1C0012E32C /* SectionHeader.swift */,
+			);
+			path = EmojiColorCollectionView;
+			sourceTree = "<group>";
+		};
 		591824122A54A63000AFC754 /* RegularTrackerTableView */ = {
 			isa = PBXGroup;
 			children = (
@@ -229,8 +250,10 @@
 		5983E3A72A433AB0005807CB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				5908060E2A5CDD1D00B0601D /* EmojiColorCollectionView */,
 				59F967852A4E025700A40F15 /* GeometricParams.swift */,
 				5969A1F02A4DCB0F00627BEF /* PlaceholderView.swift */,
+				590806112A5CE58B00B0601D /* TrackerEmoji.swift */,
 				594E6AB02A51A0CC0012E691 /* UIButton+Extensions.swift */,
 				594E6AB22A51ACD10012E691 /* UITextField+Extensions.swift */,
 				5983E3A82A433ACE005807CB /* UIColor+Extensions.swift */,
@@ -410,14 +433,17 @@
 				5945AD3B2A5A017800375D22 /* IrregularTrackerTableViewDelegate.swift in Sources */,
 				5945AD372A5A011700375D22 /* IrregularTrackerTableViewSubtitleCell.swift in Sources */,
 				5969A1EF2A4DC4F700627BEF /* DataManager.swift in Sources */,
+				59E0A3D02A5F6C1C0012E32C /* SectionHeader.swift in Sources */,
 				59CF12922A4618CE002A5BD0 /* TabBarController.swift in Sources */,
 				5945AD342A59F8B100375D22 /* IrregularTrackerViewController.swift in Sources */,
 				5945AD392A5A014E00375D22 /* IrregularTrackerTableViewDataSource.swift in Sources */,
 				5942AA242A4C6A0A00EC460F /* TrackerCollectionViewCell.swift in Sources */,
 				59C918D72A3CF27100AA0FDD /* SceneDelegate.swift in Sources */,
 				594E6AB12A51A0CC0012E691 /* UIButton+Extensions.swift in Sources */,
+				590806122A5CE58B00B0601D /* TrackerEmoji.swift in Sources */,
 				59CF12942A4618E7002A5BD0 /* StatisticsViewController.swift in Sources */,
 				5942AA332A4C729200EC460F /* RegularTrackerTableViewDelegate.swift in Sources */,
+				59E0A3CE2A5F6C0E0012E32C /* ColorCell.swift in Sources */,
 				594E6AB72A52212A0012E691 /* CreateCategoryViewController.swift in Sources */,
 				5942AA2F2A4C70C500EC460F /* RegularTrackerViewController.swift in Sources */,
 				594E6AAF2A519C490012E691 /* ScheduleViewController.swift in Sources */,
@@ -430,12 +456,14 @@
 				59F967862A4E025700A40F15 /* GeometricParams.swift in Sources */,
 				594E6ABB2A522E550012E691 /* CategoryTableViewCell.swift in Sources */,
 				5983E3B52A4370A9005807CB /* TrackerRecord.swift in Sources */,
+				590806102A5CDD5A00B0601D /* EmojiColorCollectionView.swift in Sources */,
 				594E6AC02A522E850012E691 /* CategoryTableViewDelegate.swift in Sources */,
 				594E6ABD2A522E6B0012E691 /* CategoryTableViewDataSource.swift in Sources */,
 				5983E3AB2A43506E005807CB /* UIFont+Extensions.swift in Sources */,
 				591824142A54A67200AFC754 /* RegularTrackerTableViewSubtitleCell.swift in Sources */,
 				598C2E832A5640F3005A4355 /* ScheduleTableViewDataSource.swift in Sources */,
 				59CE443A2A4E2BC800EAC98A /* TrackerCollectionViewSectionHeader.swift in Sources */,
+				59E0A3CC2A5F6BE50012E32C /* EmojiCell.swift in Sources */,
 				5942AA352A4C7BAB00EC460F /* CategoryViewController.swift in Sources */,
 				5983E3A92A433ACE005807CB /* UIColor+Extensions.swift in Sources */,
 				5942AA312A4C727C00EC460F /* RegularTrackerTableViewDataSource.swift in Sources */,
