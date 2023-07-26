@@ -10,8 +10,8 @@ import UIKit
 // MARK: - Protocols
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
-    func getSelectedDate() -> Date?
-    func updateTrackers()
+    func getSelectedDate() -> Date
+    func reloadTrackersWithCategory()
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
 }

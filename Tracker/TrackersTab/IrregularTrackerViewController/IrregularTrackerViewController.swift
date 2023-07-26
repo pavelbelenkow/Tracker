@@ -98,7 +98,8 @@ final class IrregularTrackerViewController: UIViewController {
         return button
     }()
     
-    private let dataManager = DataManager.shared
+    private let trackerStore: TrackerStoreProtocol = TrackerStore()
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
     private let titleCell = ["Категория"]
     
     private var trackerTitle = ""
@@ -142,7 +143,7 @@ final class IrregularTrackerViewController: UIViewController {
     
     private func updateCreateButton() {
         let isButtonEnabled =
-        !(trackerTitleTextField.text?.isEmpty ?? false) &&
+        !(trackerTitleTextField.text?.isEmpty ?? true) &&
         !categorySubtitle.isEmpty &&
         !emoji.isEmpty &&
         color != nil
@@ -152,10 +153,10 @@ final class IrregularTrackerViewController: UIViewController {
     }
     
     private func createTracker() {
-        if let text = trackerTitleTextField.text, !text.isEmpty {
-            trackerTitle = text
+        guard let trackerTitle = trackerTitleTextField.text, !trackerTitle.isEmpty else {
+            return
         }
-
+        
         let newTracker = Tracker(
             id: UUID(),
             title: trackerTitle,
@@ -166,24 +167,26 @@ final class IrregularTrackerViewController: UIViewController {
         
         let categoryTitle = categorySubtitle
         
-        if let index = dataManager.categories.firstIndex(where: {
-            $0.title == categoryTitle
-        }) {
-            let existingCategory = dataManager.categories[index]
-            let updatedTrackers = existingCategory.trackers + [newTracker]
-            let updatedCategory = TrackerCategory(
-                title: existingCategory.title,
-                trackers: updatedTrackers
-            )
-            
-            dataManager.categories[index] = updatedCategory
-        } else {
-            let newCategory = TrackerCategory(
-                title: categoryTitle,
-                trackers: [newTracker]
-            )
-            
-            dataManager.update(categories: [newCategory])
+        do {
+            var categories = try trackerCategoryStore.getCategories()
+            if let index = categories.firstIndex(where: { $0.title == categoryTitle }) {
+                let existingCategory = categories[index]
+                let updatedTrackers = existingCategory.trackers + [newTracker]
+                let updatedCategory = TrackerCategory(
+                    title: existingCategory.title,
+                    trackers: updatedTrackers
+                )
+                
+                try trackerStore.addTracker(newTracker, with: updatedCategory)
+            } else {
+                let newCategory = TrackerCategory(
+                    title: categoryTitle,
+                    trackers: [newTracker]
+                )
+                try trackerStore.addTracker(newTracker, with: newCategory)
+            }
+        } catch {
+            assertionFailure("Failed to add tracker with \(error)")
         }
     }
     
@@ -213,7 +216,7 @@ final class IrregularTrackerViewController: UIViewController {
     
     @objc private func createButtonTapped() {
         createTracker()
-        delegate?.updateTrackers()
+        delegate?.reloadTrackersWithCategory()
         dismissViewControllers()
     }
 }
@@ -335,7 +338,7 @@ extension IrregularTrackerViewController: UITextFieldDelegate {
         let newLength = text.count + string.count - range.length
         symbolsConstraintLabel.isHidden = (newLength <= 38)
         
-       updateCreateButton()
+        updateCreateButton()
         
         return newLength <= 38
     }
