@@ -15,6 +15,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var categoryTableView: UITableView = {
         let tableView = UITableView()
+        tableView.backgroundColor = .clear
         tableView.rowHeight = 75
         tableView.dataSource = tableViewDataSource
         tableView.delegate = tableViewDelegate
@@ -36,12 +37,13 @@ final class CategoryViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-        image: UIImage.TrackerIcon.emptyTrackers,
-        title: "Привычки и события можно объединить по смыслу"
-    )
+            image: UIImage.TrackerIcon.emptyTrackers,
+            title: "Привычки и события можно объединить по смыслу"
+        )
     }()
     
-    private let dataManager = DataManager.shared
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
+    
     private var listOfCategories: [TrackerCategory] = []
     private var categoryTitle: String = ""
 
@@ -49,7 +51,7 @@ final class CategoryViewController: UIViewController {
     private var tableViewDelegate: CategoryTableViewDelegate?
     
     var selectedIndexPath: IndexPath?
-    weak var delegate: UpdateSubtitleDelegate?
+    weak var delegate: UpdateTrackerInformationDelegate?
     
     // MARK: - Lifecycle
         
@@ -57,6 +59,7 @@ final class CategoryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
         
+        trackerCategoryStore.setDelegate(self)
         getCategories()
         
         tableViewDataSource = CategoryTableViewDataSource(viewController: self)
@@ -76,7 +79,11 @@ final class CategoryViewController: UIViewController {
     }
     
     private func getCategories() {
-        listOfCategories = dataManager.categories
+        do {
+            listOfCategories = try trackerCategoryStore.getCategories()
+        } catch {
+            assertionFailure("Failed to get categories with \(error)")
+        }
     }
     
     private func checkCategories() {
@@ -159,9 +166,21 @@ private extension CategoryViewController {
 
 extension CategoryViewController: CreateCategoryViewControllerDelegate {
     func updateListOfCategories(with category: TrackerCategory) {
-        listOfCategories.append(category)
-        dataManager.update(categories: [category])
+        do {
+            try trackerCategoryStore.addCategory(category)
+        } catch {
+            assertionFailure("Failed to add category with \(error)")
+        }
         checkCategories()
-        categoryTableView.reloadData()
+    }
+}
+
+extension CategoryViewController: TrackerCategoryStoreDelegate {
+    func didUpdate(_ update: TrackerCategoryStoreUpdate) {
+        getCategories()
+        categoryTableView.performBatchUpdates {
+            categoryTableView.insertRows(at: update.insertedIndexPaths, with: .automatic)
+            categoryTableView.deleteRows(at: update.deletedIndexPaths, with: .automatic)
+        }
     }
 }
