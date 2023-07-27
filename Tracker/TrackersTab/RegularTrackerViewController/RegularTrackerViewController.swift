@@ -177,7 +177,7 @@ final class RegularTrackerViewController: UIViewController {
         let categoryTitle = categorySubtitle
         
         do {
-            var categories = try trackerCategoryStore.getCategories()
+            let categories = try trackerCategoryStore.getCategories()
             if let index = categories.firstIndex(where: { $0.title == categoryTitle }) {
                 let existingCategory = categories[index]
                 let updatedTrackers = existingCategory.trackers + [newTracker]
