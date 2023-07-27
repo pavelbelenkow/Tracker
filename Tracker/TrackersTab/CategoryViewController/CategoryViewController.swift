@@ -37,12 +37,11 @@ final class CategoryViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-        image: UIImage.TrackerIcon.emptyTrackers,
-        title: "Привычки и события можно объединить по смыслу"
-    )
+            image: UIImage.TrackerIcon.emptyTrackers,
+            title: "Привычки и события можно объединить по смыслу"
+        )
     }()
     
-//    private let dataManager = DataManager.shared
     private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
     
     private var listOfCategories: [TrackerCategory] = []
