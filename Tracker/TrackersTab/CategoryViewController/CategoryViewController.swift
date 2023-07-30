@@ -37,7 +37,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.emptyTrackers,
+            image: UIImage.TrackerImage.emptyTrackers,
             title: "Привычки и события можно объединить по смыслу"
         )
     }()

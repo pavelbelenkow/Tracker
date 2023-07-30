@@ -15,7 +15,7 @@ final class StatisticsViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.emptyStatistics,
+            image: UIImage.TrackerImage.emptyStatistics,
             title: "Анализировать пока нечего"
         )
     }()

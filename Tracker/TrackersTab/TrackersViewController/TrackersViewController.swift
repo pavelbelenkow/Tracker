@@ -77,14 +77,14 @@ final class TrackersViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.emptyTrackers,
+            image: UIImage.TrackerImage.emptyTrackers,
             title: "Что будем отслеживать?"
         )
     }()
     
     private lazy var filteredPlaceholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.notFounded,
+            image: UIImage.TrackerImage.notFounded,
             title: "Ничего не найдено"
         )
     }()
