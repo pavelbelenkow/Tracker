@@ -14,17 +14,7 @@ final class CategoryViewController: UIViewController {
     // MARK: - Properties
     
     private lazy var categoryTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .clear
-        tableView.rowHeight = 75
-        tableView.dataSource = tableViewDataSource
-        tableView.delegate = tableViewDelegate
-        tableView.showsVerticalScrollIndicator = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(
-            CategoryTableViewCell.self,
-            forCellReuseIdentifier: CategoryTableViewCell.reuseIdentifier
-        )
+        let tableView = CategoryTableView(viewModel: viewModel)
         return tableView
     }()
     
@@ -42,84 +32,45 @@ final class CategoryViewController: UIViewController {
         )
     }()
     
-    private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
+    private let viewModel: CategoryViewModel
     
-    private var listOfCategories: [TrackerCategory] = []
-    private var categoryTitle: String = ""
-
-    private var tableViewDataSource: CategoryTableViewDataSource?
-    private var tableViewDelegate: CategoryTableViewDelegate?
+    // MARK: - Initializers
     
-    var selectedIndexPath: IndexPath?
-    weak var delegate: UpdateTrackerInformationDelegate?
+    init(viewModel: CategoryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
         
-        trackerCategoryStore.setDelegate(self)
-        getCategories()
-        
-        tableViewDataSource = CategoryTableViewDataSource(viewController: self)
-        tableViewDelegate = CategoryTableViewDelegate(viewController: self)
+        viewModel.$listOfCategories.bind { [weak self] _ in
+            self?.bind()
+        }
         
         addSubviews()
         checkCategories()
-    }
-    
-    // MARK: - Methods
-    
-    private func addSubviews() {
-        addTopNavigationLabel()
-        addPlaceholderView()
-        addAppendCategoryButton()
-        addCategoryTableView()
-    }
-    
-    private func getCategories() {
-        do {
-            listOfCategories = try trackerCategoryStore.getCategories()
-        } catch {
-            assertionFailure("Failed to get categories with \(error)")
-        }
-    }
-    
-    private func checkCategories() {
-        
-        if listOfCategories.isEmpty {
-            placeholderView.isHidden = false
-            categoryTableView.isHidden = true
-        } else {
-            categoryTableView.isHidden = false
-            placeholderView.isHidden = true
-        }
-    }
-
-    func getListOfCategories() -> [TrackerCategory] {
-        listOfCategories
-    }
-    
-    func getCategoryTitle(_ title: String) -> String {
-        categoryTitle = title
-        return categoryTitle
-    }
-    
-    // MARK: - Objective-C methods
-   
-    @objc private func appendCategoryButtonTapped() {
-        let createCategoryViewController = CreateCategoryViewController()
-        createCategoryViewController.delegate = self
-        
-        let navigationController = UINavigationController(rootViewController: createCategoryViewController)
-        present(navigationController, animated: true)
+        bind()
     }
 }
 
 // MARK: - Add Subviews
 
 private extension CategoryViewController {
+    
+    func addSubviews() {
+        addTopNavigationLabel()
+        addPlaceholderView()
+        addAppendCategoryButton()
+        addCategoryTableView()
+    }
     
     func addTopNavigationLabel() {
         title = "Категория"
@@ -162,25 +113,36 @@ private extension CategoryViewController {
     }
 }
 
-// MARK: - Delegate methods
+// MARK: - Private methods
 
-extension CategoryViewController: CreateCategoryViewControllerDelegate {
-    func updateListOfCategories(with category: TrackerCategory) {
-        do {
-            try trackerCategoryStore.addCategory(category)
-        } catch {
-            assertionFailure("Failed to add category with \(error)")
+private extension CategoryViewController {
+    
+    func checkCategories() {
+        
+        if viewModel.listOfCategories.isEmpty {
+            placeholderView.isHidden = false
+            categoryTableView.isHidden = true
+        } else {
+            categoryTableView.isHidden = false
+            placeholderView.isHidden = true
         }
-        checkCategories()
     }
-}
-
-extension CategoryViewController: TrackerCategoryStoreDelegate {
-    func didUpdate(_ update: TrackerCategoryStoreUpdate) {
-        getCategories()
-        categoryTableView.performBatchUpdates {
-            categoryTableView.insertRows(at: update.insertedIndexPaths, with: .automatic)
-            categoryTableView.deleteRows(at: update.deletedIndexPaths, with: .automatic)
+    
+    func bind() {
+        viewModel.didUpdateCategories = { [weak self] update in
+            guard let self else { return }
+            
+            self.checkCategories()
+            self.categoryTableView.performBatchUpdates {
+                self.categoryTableView.insertRows(at: update.insertedIndexPaths, with: .automatic)
+                self.categoryTableView.deleteRows(at: update.deletedIndexPaths, with: .automatic)
+            }
         }
+    }
+    
+    @objc func appendCategoryButtonTapped() {
+        let createCategoryViewController = CreateCategoryViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: createCategoryViewController)
+        present(navigationController, animated: true)
     }
 }
