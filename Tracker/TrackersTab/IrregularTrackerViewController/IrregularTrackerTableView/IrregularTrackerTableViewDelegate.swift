@@ -14,11 +14,13 @@ final class IrregularTrackerTableViewDelegate: NSObject & UITableViewDelegate {
     // MARK: - Properties
     
     private weak var viewController: IrregularTrackerViewController?
+    private var viewModel: CategoryViewModel
     
     // MARK: - Initializers
     
-    init(viewController: IrregularTrackerViewController) {
+    init(viewController: IrregularTrackerViewController, viewModel: CategoryViewModel = CategoryViewModel()) {
         self.viewController = viewController
+        self.viewModel = viewModel
     }
     
     // MARK: - Methods
@@ -26,9 +28,8 @@ final class IrregularTrackerTableViewDelegate: NSObject & UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewController else { return }
         
-        let categoryViewController = CategoryViewController()
-        categoryViewController.delegate = viewController
-        categoryViewController.selectedIndexPath = viewController.indexCategory
+        let categoryViewController = CategoryViewController(viewModel: viewModel)
+        viewModel.getSelectedCategory(from: viewController.indexCategory)
         
         let navigationController = UINavigationController(rootViewController: categoryViewController)
         viewController.present(navigationController, animated: true)

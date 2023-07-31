@@ -7,12 +7,6 @@
 
 import UIKit
 
-// MARK: - Protocols
-
-protocol CreateCategoryViewControllerDelegate: AnyObject {
-    func updateListOfCategories(with category: TrackerCategory)
-}
-
 // MARK: - Create Category ViewController Class
 
 final class CreateCategoryViewController: UIViewController {
@@ -35,7 +29,18 @@ final class CreateCategoryViewController: UIViewController {
         return button
     }()
     
-    weak var delegate: CreateCategoryViewControllerDelegate?
+    private let viewModel: CategoryViewModel
+    
+    // MARK: - Initializers
+    
+    init(viewModel: CategoryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
     
@@ -53,7 +58,7 @@ final class CreateCategoryViewController: UIViewController {
     @objc private func confirmButtonTapped() {
         if let text = categoryTitleTextField.text, !text.isEmpty {
             let category = TrackerCategory(title: text, trackers: [])
-            delegate?.updateListOfCategories(with: category)
+            viewModel.add(category: category)
         }
         
         dismiss(animated: true)

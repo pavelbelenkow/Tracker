@@ -10,7 +10,6 @@ import UIKit
 // MARK: - Protocols
 
 protocol UpdateTrackerInformationDelegate: AnyObject {
-    func updateCategorySubtitle(from string: String?, at indexPath: IndexPath?)
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int: Bool])
     func updateSelectedEmoji(_ emoji: String)
     func updateSelectedColor(_ color: UIColor)
@@ -63,16 +62,7 @@ final class RegularTrackerViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-        let view = UITableView()
-        view.rowHeight = 75
-        view.dataSource = tableViewDataSource
-        view.delegate = tableViewDelegate
-        view.register(
-            RegularTrackerTableViewSubtitleCell.self,
-            forCellReuseIdentifier: RegularTrackerTableViewSubtitleCell.reuseIdentifier
-        )
-        view.isScrollEnabled = false
-        view.translatesAutoresizingMaskIntoConstraints = false
+        let view = RegularTrackerTableView(viewModel: viewModel, viewController: self)
         return view
     }()
     
@@ -117,27 +107,45 @@ final class RegularTrackerViewController: UIViewController {
     private var emoji: String = ""
     private var color: UIColor?
     
-    private var tableViewDataSource: RegularTrackerTableViewDataSource?
-    private var tableViewDelegate: RegularTrackerTableViewDelegate?
+    private let viewModel: CategoryViewModel
     
     var indexCategory: IndexPath?
     weak var delegate: TrackerCollectionViewCellDelegate?
+    
+    // MARK: - Initializers
+    
+    init(viewModel: CategoryViewModel = CategoryViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
-        
-        tableViewDataSource = RegularTrackerTableViewDataSource(viewController: self)
-        tableViewDelegate = RegularTrackerTableViewDelegate(viewController: self)
-        
+
         addSubviews()
-        
+        updateCategorySubtitleAndIndexCategory()
         updateCreateButton()
     }
     
     // MARK: - Methods
+    
+    private func updateCategorySubtitleAndIndexCategory() {
+        viewModel.didSelectCategory = { [weak self] titleCategory, indexPath in
+            guard let self else { return }
+            
+            self.categorySubtitle = titleCategory ?? ""
+            self.indexCategory = indexPath
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            self.updateCreateButton()
+        }
+    }
     
     private func addSubviews() {
         addTopNavigationLabel()
@@ -369,16 +377,6 @@ extension RegularTrackerViewController: UITextFieldDelegate {
 // MARK: - Delegate methods
 
 extension RegularTrackerViewController: UpdateTrackerInformationDelegate {
-    
-    func updateCategorySubtitle(from string: String?, at indexPath: IndexPath?) {
-        categorySubtitle = string ?? ""
-        indexCategory = indexPath
-        
-        let indexPath = IndexPath(row: 0, section: 0)
-        tableView.reloadRows(at: [indexPath], with: .none)
-        
-        updateCreateButton()
-    }
     
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int : Bool]) {
         scheduleSubtitle = weekday ?? []
