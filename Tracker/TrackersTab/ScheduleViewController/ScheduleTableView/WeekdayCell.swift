@@ -1,5 +1,5 @@
 //
-//  ScheduleTableViewCell.swift
+//  WeekdayCell.swift
 //  Tracker
 //
 //  Created by Pavel Belenkow on 06.07.2023.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - Schedule TableViewCell Class
+// MARK: - WeekdayCell class
 
-final class ScheduleTableViewCell: UITableViewCell {
+final class WeekdayCell: UITableViewCell {
     
     // MARK: - Properties
     
@@ -26,7 +26,8 @@ final class ScheduleTableViewCell: UITableViewCell {
     func configure(
         with title: String,
         isFirstRow: Bool,
-        isLastRow: Bool
+        isLastRow: Bool,
+        separatorInset: CGFloat
     ) {
         textLabel?.text = title
         textLabel?.font = UIFont.TrackerFont.regular17
@@ -35,16 +36,16 @@ final class ScheduleTableViewCell: UITableViewCell {
         backgroundColor = UIColor.TrackerColor.background
         layer.masksToBounds = true
         layer.cornerRadius = 16
+        self.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         selectionStyle = .none
         accessoryView = switchWeekday
-        separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         if isFirstRow {
             layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         } else if isLastRow {
             layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-            separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: bounds.width + 40)
+            self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: separatorInset)
         } else {
             layer.cornerRadius = 0
         }
