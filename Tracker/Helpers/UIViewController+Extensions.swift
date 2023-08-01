@@ -10,6 +10,9 @@ import UIKit
 extension UIViewController {
     
     func configure(with image: UIImage?, and text: String) {
+        let screenHeight = UIScreen.main.bounds.height > 568
+        let constantHeight: CGFloat = screenHeight ? 304 : 200
+        
         let backgroundImage = UIImageView(image: image)
         
         let title = UILabel()
@@ -32,9 +35,9 @@ extension UIViewController {
             backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             title.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            title.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-            title.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            title.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            title.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -constantHeight),
+            title.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            title.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
         ])
     }
 }
