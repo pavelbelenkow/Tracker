@@ -1,5 +1,5 @@
 //
-//  EmojiColorCollectionView.swift
+//  CreateTrackerCollectionView.swift
 //  Tracker
 //
 //  Created by Pavel Belenkow on 11.07.2023.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - CollectionView Class
 
-final class EmojiColorCollectionView: UICollectionView {
+final class CreateTrackerCollectionView: UICollectionView {
     
     // MARK: - Properties
     
@@ -57,7 +57,7 @@ final class EmojiColorCollectionView: UICollectionView {
 
 //MARK: - DataSource methods
 
-extension EmojiColorCollectionView: UICollectionViewDataSource {
+extension CreateTrackerCollectionView: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         headers.count
@@ -145,7 +145,7 @@ extension EmojiColorCollectionView: UICollectionViewDataSource {
 
 // MARK: - Delegate methods
 
-extension EmojiColorCollectionView: UICollectionViewDelegateFlowLayout {
+extension CreateTrackerCollectionView: UICollectionViewDelegateFlowLayout {
 
     func collectionView(
         _ collectionView: UICollectionView,

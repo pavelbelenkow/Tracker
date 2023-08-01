@@ -29,8 +29,8 @@ final class CreateTrackerTableView: UITableView {
         delegate = self
         
         register(
-            TableViewSubtitleCell.self,
-            forCellReuseIdentifier: TableViewSubtitleCell.reuseIdentifier
+            SubtitleCell.self,
+            forCellReuseIdentifier: SubtitleCell.reuseIdentifier
         )
         
         isScrollEnabled = false
@@ -45,7 +45,7 @@ final class CreateTrackerTableView: UITableView {
 // MARK: - Private methods
 
 private extension CreateTrackerTableView {
-    func configureCell(_ cell: TableViewSubtitleCell, at indexPath: IndexPath) {
+    func configureCell(_ cell: SubtitleCell, at indexPath: IndexPath) {
         guard let viewController else { return }
         
         let titles = viewController.getTitles()
@@ -83,17 +83,17 @@ extension CreateTrackerTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: TableViewSubtitleCell.reuseIdentifier,
+            withIdentifier: SubtitleCell.reuseIdentifier,
             for: indexPath
         )
         
-        guard let itemCell = cell as? TableViewSubtitleCell else {
+        guard let subtitleCell = cell as? SubtitleCell else {
             return UITableViewCell()
         }
         
-        configureCell(itemCell, at: indexPath)
+        configureCell(subtitleCell, at: indexPath)
         
-        return itemCell
+        return subtitleCell
     }
 }
 

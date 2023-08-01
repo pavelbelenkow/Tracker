@@ -1,5 +1,5 @@
 //
-//  TableViewSubtitleCell.swift
+//  SubtitleCell.swift
 //  Tracker
 //
 //  Created by Pavel Belenkow on 01.08.2023.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - SubtitleCell class
 
-final class TableViewSubtitleCell: UITableViewCell {
+final class SubtitleCell: UITableViewCell {
     
     // MARK: - Properties
     

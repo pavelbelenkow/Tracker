@@ -68,7 +68,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let view = EmojiColorCollectionView(frame: .zero, collectionViewLayout: layout)
+        let view = CreateTrackerCollectionView(frame: .zero, collectionViewLayout: layout)
         view.selectionDelegate = self
         return view
     }()
