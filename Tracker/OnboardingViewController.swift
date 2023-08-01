@@ -23,12 +23,16 @@ final class OnboardingViewController: UIPageViewController {
     
     private lazy var pages: [UIViewController] = {
         let firstPage = UIViewController()
-        firstPage.configure(with: UIImage.TrackerImage.onboardingFirstPage,
-                            and: Constants.firstPageTitle)
+        firstPage.configure(
+            with: UIImage.TrackerImage.onboardingFirstPage,
+            and: Constants.firstPageTitle
+        )
         
         let secondPage = UIViewController()
-        secondPage.configure(with: UIImage.TrackerImage.onboardingSecondPage,
-                             and: Constants.secondPageTitle)
+        secondPage.configure(
+            with: UIImage.TrackerImage.onboardingSecondPage,
+            and: Constants.secondPageTitle
+        )
         return [firstPage, secondPage]
     }()
     
