@@ -118,14 +118,8 @@ private extension CategoryViewController {
 private extension CategoryViewController {
     
     func checkCategories() {
-        
-        if viewModel.listOfCategories.isEmpty {
-            placeholderView.isHidden = false
-            categoryTableView.isHidden = true
-        } else {
-            categoryTableView.isHidden = false
-            placeholderView.isHidden = true
-        }
+        placeholderView.isHidden = !viewModel.listOfCategories.isEmpty
+        categoryTableView.isHidden = viewModel.listOfCategories.isEmpty
     }
     
     func bind() {
