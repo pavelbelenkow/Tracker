@@ -117,7 +117,7 @@ final class CreateTrackerViewController: UIViewController {
     }()
     
     var indexCategory: IndexPath?
-    weak var delegate: TrackerCollectionViewCellDelegate?
+    weak var delegate: TrackerCellDelegate?
     
     // MARK: - Initializers
     

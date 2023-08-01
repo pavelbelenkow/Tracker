@@ -1,5 +1,5 @@
 //
-//  TrackerCollectionViewCell.swift
+//  TrackerCell.swift
 //  Tracker
 //
 //  Created by Pavel Belenkow on 28.06.2023.
@@ -9,16 +9,16 @@ import UIKit
 
 // MARK: - Protocols
 
-protocol TrackerCollectionViewCellDelegate: AnyObject {
+protocol TrackerCellDelegate: AnyObject {
     func getSelectedDate() -> Date
     func reloadTrackersWithCategory()
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
 }
 
-// MARK: - Tracker CollectionViewCell Class
+// MARK: - CollectionViewCell class
 
-final class TrackerCollectionViewCell: UICollectionViewCell {
+final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Properties
     
@@ -94,11 +94,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private var trackerId: UUID?
     private var indexPath: IndexPath?
     
-    weak var delegate: TrackerCollectionViewCellDelegate?
+    weak var delegate: TrackerCellDelegate?
+}
+
+// MARK: - Add Subviews
+
+private extension TrackerCell {
     
-    // MARK: - Methods
-    
-    private func addSubviews() {
+    func addSubviews() {
         addTrackerView()
         addStackView()
         addEmojiLabel()
@@ -106,87 +109,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         addCounterDayLabel()
         addAppendDayButton()
     }
-    
-    private func getDaysText(_ completedDays: Int) -> String {
-        let lastTwoDigits = completedDays % 100
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
-            return "\(completedDays) дней"
-        } else {
-            switch completedDays % 10 {
-            case 1:
-                return "\(completedDays) день"
-            case 2...4:
-                return "\(completedDays) дня"
-            default:
-                return "\(completedDays) дней"
-            }
-        }
-    }
-    
-    private func checkCompletedToday() {
-        let opacity: Float = isCompletedToday ? 0.3 : 1.0
-        let image = isCompletedToday ? doneImage : plusImage
-        
-        appendDayButton.setImage(image, for: .normal)
-        appendDayButton.layer.opacity = opacity
-    }
-    
-    private func checkDate() {
-        let selectedDate = delegate?.getSelectedDate() ?? Date()
-        let opacity: Float = selectedDate <= currentDate ?? Date() ? 1.0 : 0.3
-        
-        trackerView.layer.opacity = opacity
-        stackView.layer.opacity = opacity
-        
-        appendDayButton.isEnabled = selectedDate <= currentDate ?? Date()
-    }
-    
-    func configure(
-        with tracker: Tracker,
-        isCompletedToday: Bool,
-        completedDays: Int,
-        at indexPath: IndexPath
-    ) {
-        self.isCompletedToday = isCompletedToday
-        self.trackerId = tracker.id
-        self.indexPath = indexPath
-        
-        let color = tracker.color
-        addSubviews()
-        
-        trackerView.backgroundColor = color
-        appendDayButton.backgroundColor = color
-        
-        trackerTitleLabel.text = tracker.title
-        emojiLabel.text = tracker.emoji
-        
-        let daysText = getDaysText(completedDays)
-        counterDayLabel.text = daysText
-        
-        checkCompletedToday()
-        checkDate()
-    }
-    
-    // MARK: - Objective-C methods
-    
-    @objc private func appendDayButtonTapped() {
-        guard let trackerId, let indexPath else {
-            assert(false, "ID not found")
-            return
-        }
-        
-        if isCompletedToday {
-            delegate?.uncompleteTracker(id: trackerId, at: indexPath)
-        } else {
-            delegate?.completeTracker(id: trackerId, at: indexPath)
-        }
-    }
-}
-
-// MARK: - Add Subviews
-
-private extension TrackerCollectionViewCell {
     
     func addTrackerView() {
         contentView.addSubview(trackerView)
@@ -229,7 +151,7 @@ private extension TrackerCollectionViewCell {
             trackerTitleLabel.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12)
         ])
     }
-        
+    
     func addCounterDayLabel() {
         stackView.addArrangedSubview(counterDayLabel)
     }
@@ -242,5 +164,89 @@ private extension TrackerCollectionViewCell {
             appendDayButton.heightAnchor.constraint(equalToConstant: 34),
             appendDayButton.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 8)
         ])
+    }
+}
+
+// MARK: - Private methods
+
+private extension TrackerCell {
+    
+    func getDaysText(_ completedDays: Int) -> String {
+        let lastTwoDigits = completedDays % 100
+        
+        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
+            return "\(completedDays) дней"
+        } else {
+            switch completedDays % 10 {
+            case 1:
+                return "\(completedDays) день"
+            case 2...4:
+                return "\(completedDays) дня"
+            default:
+                return "\(completedDays) дней"
+            }
+        }
+    }
+    
+    func checkCompletedToday() {
+        let opacity: Float = isCompletedToday ? 0.3 : 1.0
+        let image = isCompletedToday ? doneImage : plusImage
+        
+        appendDayButton.setImage(image, for: .normal)
+        appendDayButton.layer.opacity = opacity
+    }
+    
+    func checkDate() {
+        let selectedDate = delegate?.getSelectedDate() ?? Date()
+        let opacity: Float = selectedDate <= currentDate ?? Date() ? 1.0 : 0.3
+        
+        trackerView.layer.opacity = opacity
+        stackView.layer.opacity = opacity
+        
+        appendDayButton.isEnabled = selectedDate <= currentDate ?? Date()
+    }
+    
+    @objc func appendDayButtonTapped() {
+        guard let trackerId, let indexPath else {
+            assert(false, "ID not found")
+            return
+        }
+        
+        if isCompletedToday {
+            delegate?.uncompleteTracker(id: trackerId, at: indexPath)
+        } else {
+            delegate?.completeTracker(id: trackerId, at: indexPath)
+        }
+    }
+}
+
+// MARK: - Configure method
+
+extension TrackerCell {
+    
+    func configure(
+        with tracker: Tracker,
+        isCompletedToday: Bool,
+        completedDays: Int,
+        at indexPath: IndexPath
+    ) {
+        self.isCompletedToday = isCompletedToday
+        self.trackerId = tracker.id
+        self.indexPath = indexPath
+        
+        let color = tracker.color
+        addSubviews()
+        
+        trackerView.backgroundColor = color
+        appendDayButton.backgroundColor = color
+        
+        trackerTitleLabel.text = tracker.title
+        emojiLabel.text = tracker.emoji
+        
+        let daysText = getDaysText(completedDays)
+        counterDayLabel.text = daysText
+        
+        checkCompletedToday()
+        checkDate()
     }
 }

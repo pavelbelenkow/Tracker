@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: - Tracker SearchBar Class
+// MARK: - SearchBar class
 
 final class TrackerSearchBar: UISearchBar {
     

@@ -27,7 +27,7 @@ final class TrackerTypeViewController: UIViewController {
         return button
     }()
     
-    weak var delegate: TrackerCollectionViewCellDelegate?
+    weak var delegate: TrackerCellDelegate?
     
     // MARK: - Lifecycle
     
@@ -38,24 +38,6 @@ final class TrackerTypeViewController: UIViewController {
         addTopNavigationLabel()
         addRegularTrackerButton()
         addIrregularTrackerButton()
-    }
-    
-    // MARK: - Objective-C methods
-    
-    @objc private func regularTrackerButtonTapped() {
-        let regularTrackerViewController = CreateTrackerViewController(isRegular: true)
-        regularTrackerViewController.delegate = delegate
-        
-        let navigationController = UINavigationController(rootViewController: regularTrackerViewController)
-        present(navigationController, animated: true)
-    }
-    
-    @objc private func irregularTrackerButtonTapped() {
-        let irregularTrackerViewController = CreateTrackerViewController(isRegular: false)
-        irregularTrackerViewController.delegate = delegate
-        
-        let navigationController = UINavigationController(rootViewController: irregularTrackerViewController)
-        present(navigationController, animated: true)
     }
 }
 
@@ -89,5 +71,26 @@ private extension TrackerTypeViewController {
             irregularTrackerButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             irregularTrackerButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
         ])
+    }
+}
+
+// MARK: - Objective-C methods
+
+private extension TrackerTypeViewController {
+    
+    @objc func regularTrackerButtonTapped() {
+        let regularTrackerViewController = CreateTrackerViewController(isRegular: true)
+        regularTrackerViewController.delegate = delegate
+        
+        let navigationController = UINavigationController(rootViewController: regularTrackerViewController)
+        present(navigationController, animated: true)
+    }
+    
+    @objc func irregularTrackerButtonTapped() {
+        let irregularTrackerViewController = CreateTrackerViewController(isRegular: false)
+        irregularTrackerViewController.delegate = delegate
+        
+        let navigationController = UINavigationController(rootViewController: irregularTrackerViewController)
+        present(navigationController, animated: true)
     }
 }
