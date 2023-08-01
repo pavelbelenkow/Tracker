@@ -7,22 +7,14 @@
 
 import UIKit
 
-// MARK: - Schedule ViewController Class
+// MARK: - ViewController class
 
 final class ScheduleViewController: UIViewController {
     
     // MARK: - Properties
     
     private lazy var scheduleTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.rowHeight = 75
-        tableView.dataSource = dataSource
-        tableView.showsVerticalScrollIndicator = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(
-            ScheduleTableViewCell.self,
-            forCellReuseIdentifier: ScheduleTableViewCell.reuseIdentifier
-        )
+        let tableView = ScheduleTableView(viewController: self)
         return tableView
     }()
     
@@ -36,8 +28,6 @@ final class ScheduleViewController: UIViewController {
     
     private let weekdayList: [Weekday] = Weekday.allCases
     
-    private var dataSource: ScheduleTableViewDataSource?
-    
     var schedule: [Weekday] = []
     var selectedWeekdays: [Int : Bool] = [:]
     weak var delegate: UpdateTrackerInformationDelegate?
@@ -48,18 +38,12 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
 
-        dataSource = ScheduleTableViewDataSource(viewController: self)
-        
-        addSubviews()
-    }
-    
-    // MARK: - Methods
-    
-    private func addSubviews() {
         addTopNavigationLabel()
         addConfirmButton()
         addScheduleTableView()
     }
+    
+    // MARK: - Methods
     
     func getWeekdays() -> [Weekday] {
         weekdayList
@@ -110,3 +94,4 @@ private extension ScheduleViewController {
         ])
     }
 }
+

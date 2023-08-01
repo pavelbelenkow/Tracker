@@ -7,7 +7,7 @@
 
 import UIKit
 
-//MARK: - Trackers ViewController Class
+//MARK: - ViewController class
 
 final class TrackersViewController: UIViewController {
     
@@ -51,13 +51,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = .clear
-        view.dataSource = dataSource
-        view.delegate = delegate
-        view.allowsMultipleSelection = false
-        view.showsVerticalScrollIndicator = false
-        view.translatesAutoresizingMaskIntoConstraints = false
+        let view = TrackersCollectionView(viewController: self, layout: layout)
         return view
     }()
     
@@ -77,14 +71,14 @@ final class TrackersViewController: UIViewController {
     
     private lazy var placeholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.emptyTrackers,
+            image: UIImage.TrackerImage.emptyTrackers,
             title: "Что будем отслеживать?"
         )
     }()
     
     private lazy var filteredPlaceholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerIcon.notFounded,
+            image: UIImage.TrackerImage.notFounded,
             title: "Ничего не найдено"
         )
     }()
@@ -97,9 +91,6 @@ final class TrackersViewController: UIViewController {
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
     
-    private var dataSource: TrackerCollectionViewDataSource?
-    private var delegate: TrackerCollectionViewDelegate?
-    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -107,16 +98,17 @@ final class TrackersViewController: UIViewController {
         view.backgroundColor = UIColor.TrackerColor.white
         
         trackerStore.setDelegate(self)
-        dataSource = TrackerCollectionViewDataSource(viewController: self)
-        delegate = TrackerCollectionViewDelegate(viewController: self)
         
         addSubviews()
         reloadData()
     }
+}
+
+// MARK: - Add Subviews
+
+private extension TrackersViewController {
     
-    // MARK: - Methods
-    
-    private func addSubviews() {
+    func addSubviews() {
         addNavigationBar()
         addSearchTrackersTextField()
         addFilterButton()
@@ -124,7 +116,69 @@ final class TrackersViewController: UIViewController {
         addPlaceholderView(placeholderView)
     }
     
-    private func reloadData() {
+    func addNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        
+        title = "Трекеры"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.largeTitleTextAttributes = [
+            .font: UIFont.TrackerFont.bold34,
+            .foregroundColor: UIColor.TrackerColor.black
+        ]
+    }
+    
+    func addSearchTrackersTextField() {
+        view.addSubview(searchBar)
+        view.addGestureRecognizer(tapGesture)
+        
+        NSLayoutConstraint.activate([
+            searchBar.heightAnchor.constraint(equalToConstant: 36),
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8)
+        ])
+    }
+    
+    func addTrackersCollectionView() {
+        view.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 34),
+            collectionView.bottomAnchor.constraint(equalTo: filterButton.topAnchor, constant: -16),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+    }
+    
+    func addFilterButton() {
+        view.addSubview(filterButton)
+        
+        NSLayoutConstraint.activate([
+            filterButton.widthAnchor.constraint(equalToConstant: 114),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+    
+    func addPlaceholderView(_ placeholder: UIView) {
+        view.addSubview(placeholder)
+        
+        NSLayoutConstraint.activate([
+            placeholder.widthAnchor.constraint(equalToConstant: 200),
+            placeholder.heightAnchor.constraint(equalToConstant: 200),
+            placeholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholder.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+}
+
+// MARK: - Private methods
+
+private extension TrackersViewController {
+    
+    func reloadData() {
         do {
             categories = try trackerCategoryStore.getCategories()
         } catch {
@@ -133,7 +187,7 @@ final class TrackersViewController: UIViewController {
         datePickerDateChanged()
     }
     
-    private func updatePlaceholderViews() {
+    func updatePlaceholderViews() {
         if !categories.isEmpty && visibleCategories.isEmpty {
             addPlaceholderView(filteredPlaceholderView)
             filterButton.isHidden = false
@@ -151,7 +205,7 @@ final class TrackersViewController: UIViewController {
         filterButton.isHidden = visibleCategories.isEmpty
     }
     
-    private func filterCategories() -> [TrackerCategory] {
+    func filterCategories() -> [TrackerCategory] {
         currentDate = datePicker.date
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: currentDate ?? Date())
@@ -177,11 +231,44 @@ final class TrackersViewController: UIViewController {
         }
     }
     
-    private func reloadVisibleCategories() {
+    func reloadVisibleCategories() {
         visibleCategories = filterCategories()
         updatePlaceholderViews()
         collectionView.reloadData()
     }
+}
+
+// MARK: - Objective-C methods
+
+private extension TrackersViewController {
+    
+    @objc func addTrackerButtonTapped() {
+        let trackerTypeViewController = TrackerTypeViewController()
+        trackerTypeViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: trackerTypeViewController)
+        present(navigationController, animated: true)
+    }
+    
+    @objc func datePickerDateChanged() {
+        reloadVisibleCategories()
+    }
+    
+    @objc func searchBarTapped() {
+        reloadVisibleCategories()
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func filterButtonTapped() {
+        print("Filter button tapped")
+    }
+}
+
+// MARK: - Methods
+
+extension TrackersViewController {
     
     func getVisibleCategories() -> [TrackerCategory] {
         visibleCategories
@@ -194,103 +281,6 @@ final class TrackersViewController: UIViewController {
             assertionFailure("Failed to get records for tracker")
             return []
         }
-    }
- 
-    // MARK: - Objective-C methods
-    
-    @objc private func addTrackerButtonTapped() {
-        let createTrackerViewController = CreateTrackerViewController()
-        createTrackerViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: createTrackerViewController)
-        present(navigationController, animated: true)
-    }
-    
-    @objc private func datePickerDateChanged() {
-        reloadVisibleCategories()
-    }
-    
-    @objc private func searchBarTapped() {
-        reloadVisibleCategories()
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    @objc private func filterButtonTapped() {
-        print("Filter button tapped")
-    }
-}
-
-// MARK: - Add Subviews
-
-private extension TrackersViewController {
-    
-    func addNavigationBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        
-        title = "Трекеры"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.largeTitleTextAttributes = [
-            .font: UIFont.TrackerFont.bold34,
-            .foregroundColor: UIColor.TrackerColor.black
-        ]
-    }
-        
-    func addSearchTrackersTextField() {
-        view.addSubview(searchBar)
-        view.addGestureRecognizer(tapGesture)
-        
-        NSLayoutConstraint.activate([
-            searchBar.heightAnchor.constraint(equalToConstant: 36),
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
-            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8)
-        ])
-    }
-    
-    func addTrackersCollectionView() {
-        view.addSubview(collectionView)
-        
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 34),
-            collectionView.bottomAnchor.constraint(equalTo: filterButton.topAnchor, constant: -16),
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
-        ])
-        
-        collectionView.register(
-            TrackerCollectionViewCell.self,
-            forCellWithReuseIdentifier: TrackerCollectionViewCell.reuseIdentifier
-        )
-        collectionView.register(
-            TrackerCollectionViewSectionHeader.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: TrackerCollectionViewSectionHeader.reuseIdentifier
-        )
-    }
-    
-    func addFilterButton() {
-        view.addSubview(filterButton)
-        
-        NSLayoutConstraint.activate([
-            filterButton.widthAnchor.constraint(equalToConstant: 114),
-            filterButton.heightAnchor.constraint(equalToConstant: 50),
-            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
-    }
-    
-    func addPlaceholderView(_ placeholder: UIView) {
-        view.addSubview(placeholder)
-        
-        NSLayoutConstraint.activate([
-            placeholder.widthAnchor.constraint(equalToConstant: 200),
-            placeholder.heightAnchor.constraint(equalToConstant: 200),
-            placeholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholder.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
     }
 }
 
@@ -319,9 +309,9 @@ extension TrackersViewController: UISearchBarDelegate {
     }
 }
 
-// MARK: - Delegate methods
+// MARK: - TrackerCellDelegate methods
 
-extension TrackersViewController: TrackerCollectionViewCellDelegate {
+extension TrackersViewController: TrackerCellDelegate {
     
     private func isSameTrackerRecord(trackerRecord: TrackerRecord, id: UUID) -> Bool {
         currentDate = datePicker.date
@@ -364,6 +354,8 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
         collectionView.reloadItems(at: [indexPath])
     }
 }
+
+// MARK: - TrackerStoreDelegate methods
 
 extension TrackersViewController: TrackerStoreDelegate {
     

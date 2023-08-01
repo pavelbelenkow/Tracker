@@ -1,5 +1,5 @@
 //
-//  TrackerCollectionViewSectionHeader.swift
+//  TrackerSectionHeader.swift
 //  Tracker
 //
 //  Created by Pavel Belenkow on 30.06.2023.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - Tracker CollectionViewSection Header Class
+// MARK: - TrackerSectionHeader class
 
-final class TrackerCollectionViewSectionHeader: UICollectionReusableView {
+final class TrackerSectionHeader: UICollectionReusableView {
     
     // MARK: - Properties
     

@@ -1,15 +1,15 @@
 //
-//  RegularTrackerTableViewSubtitleCell.swift
+//  SubtitleCell.swift
 //  Tracker
 //
-//  Created by Pavel Belenkow on 04.07.2023.
+//  Created by Pavel Belenkow on 01.08.2023.
 //
 
 import UIKit
 
-// MARK: - Regular Tracker TableViewSubtitleCell Class
+// MARK: - SubtitleCell class
 
-final class RegularTrackerTableViewSubtitleCell: UITableViewCell {
+final class SubtitleCell: UITableViewCell {
     
     // MARK: - Properties
     
@@ -30,31 +30,37 @@ final class RegularTrackerTableViewSubtitleCell: UITableViewCell {
     func configure(
         with title: String,
         categorySubtitle: String,
-        scheduleSubtitle: String,
-        isFirstRow: Bool
+        scheduleSubtitle: String? = nil,
+        isFirstRow: Bool = false,
+        isLastRow: Bool = false,
+        separatorInset: CGFloat
     ) {
         textLabel?.text = title
         textLabel?.font = UIFont.TrackerFont.regular17
         textLabel?.textColor = UIColor.TrackerColor.black
-        
+
+        detailTextLabel?.text = isFirstRow ? categorySubtitle : scheduleSubtitle
         detailTextLabel?.font = UIFont.TrackerFont.regular17
         detailTextLabel?.textColor = UIColor.TrackerColor.gray
-        
+
         backgroundColor = UIColor.TrackerColor.background
         layer.masksToBounds = true
         layer.cornerRadius = 16
-        
+        self.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+
         selectionStyle = .none
         accessoryType = .disclosureIndicator
-        separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
-        if isFirstRow {
-            detailTextLabel?.text = categorySubtitle
+        switch (isFirstRow, isLastRow) {
+        case (true, true):
+            self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: separatorInset)
+        case (true, false):
             layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        } else {
-            detailTextLabel?.text = scheduleSubtitle
+        case (false, true):
             layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-            separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: bounds.width + 40)
+            self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: separatorInset)
+        default:
+            layer.cornerRadius = 0
         }
     }
 }
