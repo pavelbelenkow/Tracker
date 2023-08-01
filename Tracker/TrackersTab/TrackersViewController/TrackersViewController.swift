@@ -199,9 +199,9 @@ final class TrackersViewController: UIViewController {
     // MARK: - Objective-C methods
     
     @objc private func addTrackerButtonTapped() {
-        let createTrackerViewController = CreateTrackerViewController()
-        createTrackerViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: createTrackerViewController)
+        let trackerTypeViewController = TrackerTypeViewController()
+        trackerTypeViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: trackerTypeViewController)
         present(navigationController, animated: true)
     }
     

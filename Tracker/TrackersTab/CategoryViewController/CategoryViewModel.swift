@@ -47,11 +47,6 @@ extension CategoryViewModel {
     func getSelectedCategory(from indexPath: IndexPath?) {
         selectedIndexPath = indexPath
         
-        guard !listOfCategories.isEmpty else {
-            didSelectCategory?("", indexPath)
-            return
-        }
-        
         let categories = listOfCategories
         let categoryTitle = categories[indexPath?.row ?? 0].title
         
