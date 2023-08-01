@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: - Category ViewController Class
+// MARK: - ViewController Class
 
 final class CategoryViewController: UIViewController {
     

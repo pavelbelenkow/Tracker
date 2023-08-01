@@ -19,7 +19,7 @@
 		594E6AB12A51A0CC0012E691 /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AB02A51A0CC0012E691 /* UIButton+Extensions.swift */; };
 		594E6AB32A51ACD10012E691 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AB22A51ACD10012E691 /* UITextField+Extensions.swift */; };
 		594E6AB72A52212A0012E691 /* CreateCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6AB62A52212A0012E691 /* CreateCategoryViewController.swift */; };
-		594E6ABB2A522E550012E691 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6ABA2A522E550012E691 /* CategoryTableViewCell.swift */; };
+		594E6ABB2A522E550012E691 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594E6ABA2A522E550012E691 /* CategoryCell.swift */; };
 		59570D022A75D25E0049CA12 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59570D012A75D25E0049CA12 /* OnboardingViewController.swift */; };
 		59570D042A75D53A0049CA12 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59570D032A75D53A0049CA12 /* UIViewController+Extensions.swift */; };
 		596055312A644BFF0035F228 /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5960552F2A644BFF0035F228 /* Tracker.xcdatamodeld */; };
@@ -71,7 +71,7 @@
 		594E6AB02A51A0CC0012E691 /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
 		594E6AB22A51ACD10012E691 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
 		594E6AB62A52212A0012E691 /* CreateCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCategoryViewController.swift; sourceTree = "<group>"; };
-		594E6ABA2A522E550012E691 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
+		594E6ABA2A522E550012E691 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		59570D012A75D25E0049CA12 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		59570D032A75D53A0049CA12 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		596055302A644BFF0035F228 /* Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tracker.xcdatamodel; sourceTree = "<group>"; };
@@ -213,7 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				59F1C9CD2A76FE0E0087F78D /* CategoryTableView.swift */,
-				594E6ABA2A522E550012E691 /* CategoryTableViewCell.swift */,
+				594E6ABA2A522E550012E691 /* CategoryCell.swift */,
 			);
 			path = CategoryTableView;
 			sourceTree = "<group>";
@@ -463,7 +463,7 @@
 				5983E3AE2A435C60005807CB /* UIImage+Extensions.swift in Sources */,
 				59F967862A4E025700A40F15 /* GeometricParams.swift in Sources */,
 				596055312A644BFF0035F228 /* Tracker.xcdatamodeld in Sources */,
-				594E6ABB2A522E550012E691 /* CategoryTableViewCell.swift in Sources */,
+				594E6ABB2A522E550012E691 /* CategoryCell.swift in Sources */,
 				5983E3B52A4370A9005807CB /* TrackerRecord.swift in Sources */,
 				597E60BF2A787B170030E05A /* CreateTrackerTableView.swift in Sources */,
 				59F1C9CE2A76FE0E0087F78D /* CategoryTableView.swift in Sources */,

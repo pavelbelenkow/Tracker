@@ -27,7 +27,7 @@ final class CategoryTableView: UITableView {
         dataSource = self
         delegate = self
         
-        register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.reuseIdentifier)
+        register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         
         showsVerticalScrollIndicator = false
         translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +42,7 @@ final class CategoryTableView: UITableView {
 
 private extension CategoryTableView {
     
-    func configureCell(_ cell: CategoryTableViewCell, at indexPath: IndexPath) {
+    func configureCell(_ cell: CategoryCell, at indexPath: IndexPath) {
         let categories = viewModel.listOfCategories
         let category = categories[indexPath.row]
         
@@ -54,7 +54,8 @@ private extension CategoryTableView {
             with: category.title,
             isFirstRow: isFirstRow,
             isLastRow: isLastRow,
-            isSelected: isCellSelected
+            isSelected: isCellSelected,
+            separatorInset: self.bounds.width
         )
     }
 }
@@ -69,11 +70,11 @@ extension CategoryTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: CategoryTableViewCell.reuseIdentifier,
+            withIdentifier: CategoryCell.reuseIdentifier,
             for: indexPath
         )
         
-        guard let categoryCell = cell as? CategoryTableViewCell else {
+        guard let categoryCell = cell as? CategoryCell else {
             return UITableViewCell()
         }
         
