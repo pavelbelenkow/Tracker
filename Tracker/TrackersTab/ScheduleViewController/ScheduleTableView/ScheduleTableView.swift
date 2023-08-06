@@ -45,7 +45,7 @@ private extension ScheduleTableView {
     func configureCell(_ cell: WeekdayCell, at indexPath: IndexPath) {
         guard let viewController else { return }
         
-        let title = viewController.getWeekdays()[indexPath.row].rawValue
+        let title = viewController.getWeekdays()[indexPath.row].weekdayLocalizedName
         let isFirstRow = indexPath.row == 0
         let isLastRow = indexPath.row == viewController.getWeekdays().count - 1
         

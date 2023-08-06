@@ -57,11 +57,15 @@ final class TrackersViewController: UIViewController {
     
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .system)
+        let localizedTitle = NSLocalizedString(
+            "button.filters.title",
+            comment: "Title of the tracker filtering button"
+        )
         button.backgroundColor = UIColor.TrackerColor.blue
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
         button.tintColor = UIColor.TrackerColor.white
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(localizedTitle, for: .normal)
         button.titleLabel?.font = UIFont.TrackerFont.regular17
         button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
         button.isHidden = true
@@ -72,14 +76,20 @@ final class TrackersViewController: UIViewController {
     private lazy var placeholderView: UIView = {
         PlaceholderView(
             image: UIImage.TrackerImage.emptyTrackers,
-            title: "Что будем отслеживать?"
+            title: NSLocalizedString(
+                "placeholder.emptyTrackers.title",
+                comment: "Title of the state with empty trackers"
+            )
         )
     }()
     
     private lazy var filteredPlaceholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerImage.notFounded,
-            title: "Ничего не найдено"
+            image: UIImage.TrackerImage.nothingFound,
+            title: NSLocalizedString(
+                "placeholder.nothingFound.title",
+                comment: "Title of the state with empty filtered trackers"
+            )
         )
     }()
     
@@ -120,7 +130,11 @@ private extension TrackersViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        title = "Трекеры"
+        let localizedTitle = NSLocalizedString(
+            "trackers.title",
+            comment: "Title of the trackers on the navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [
             .font: UIFont.TrackerFont.bold34,

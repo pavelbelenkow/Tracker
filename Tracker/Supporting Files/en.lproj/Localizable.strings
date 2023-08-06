@@ -1,0 +1,58 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Pavel Belenkow on 04.08.2023.
+  
+*/
+
+"onboardingFirstLabel.title" = "Track only what you want";
+"onboardingSecondLabel.title" = "Even if it's not liters of water and yoga";
+"symbolsConstraintLabel.title" = "Limit of 38 characters";
+
+"trackers.title" = "Trackers";
+"statistics.title" = "Statistics";
+"category.title" = "Category";
+"schedule.title" = "Schedule";
+"emoji.title" = "Emoji";
+"color.title" = "Color";
+
+"navBar.newTracker.title" = "Create tracker";
+"navBar.newRegularEvent.title" = "New habit";
+"navBar.newIrregularEvent.title" = "New irregular event";
+"navBar.newCategory.title" = "New category";
+
+"searchBar.placeholder.title" = "Search";
+"textField.tracker.title" = "Type tracker name";
+"textField.category.title" = "Type category name";
+ 
+"placeholder.emptyTrackers.title" = "What will we track?";
+"placeholder.emptyStatistics.title" = "Nothing to analyze yet";
+"placeholder.emptyCategories.title" = "Habits and events can be combined by meaning";
+"placeholder.nothingFound.title" = "Nothing found";
+
+"button.onboarding.title" = "That's technology!";
+"button.filters.title" = "Filters";
+"button.regularEvent.title" = "Habit";
+"button.irregularEvent.title" = "Irregular event";
+"button.cancel.title" = "Cancel";
+"button.create.title" = "Create";
+"button.addCategory.title" = "Add category";
+"button.confirm.title" = "Done";
+
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
+"mon" = "Mon";
+"tue" = "Tue";
+"wed" = "Wed";
+"thu" = "Thu";
+"fri" = "Fri";
+"sat" = "Sat";
+"sun" = "Sun";
+"everyDay" = "Every day";

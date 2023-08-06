@@ -16,7 +16,10 @@ final class StatisticsViewController: UIViewController {
     private lazy var placeholderView: UIView = {
         PlaceholderView(
             image: UIImage.TrackerImage.emptyStatistics,
-            title: "Анализировать пока нечего"
+            title: NSLocalizedString(
+                "placeholder.emptyStatistics.title",
+                comment: "Title of the state with empty statistics"
+            )
         )
     }()
     
@@ -35,7 +38,11 @@ final class StatisticsViewController: UIViewController {
 private extension StatisticsViewController {
     
     func addNavigationBar() {
-        navigationItem.title = "Статистика"
+        let localizedTitle = NSLocalizedString(
+            "statistics.title",
+            comment: "Title of the statistics in the navigation bar"
+        )
+        navigationItem.title = localizedTitle
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     

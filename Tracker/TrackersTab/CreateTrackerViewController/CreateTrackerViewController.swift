@@ -45,14 +45,22 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var trackerTitleTextField: UITextField = {
         let textField = UITextField()
-        textField.configure(with: "Введите название трекера")
+        let localizedTitle = NSLocalizedString(
+            "textField.tracker.title",
+            comment: "Title of the placeholder for typing tracker title in the text field"
+        )
+        textField.configure(with: localizedTitle)
         textField.delegate = self
         return textField
     }()
     
     private lazy var symbolsConstraintLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        let localizedTitle = NSLocalizedString(
+            "symbolsConstraintLabel.title",
+            comment: "Title of the label that displays the maximum number of symbols in the text field up to 38"
+        )
+        label.text = localizedTitle
         label.textColor = UIColor.TrackerColor.red
         label.font = UIFont.TrackerFont.regular17
         label.textAlignment = .center
@@ -84,14 +92,22 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .cancelButton, for: "Отменить")
+        let localizedTitle = NSLocalizedString(
+            "button.cancel.title",
+            comment: "Title of the cancel button"
+        )
+        button.configure(with: .cancelButton, for: localizedTitle)
         button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .createButton, for: "Создать")
+        let localizedTitle = NSLocalizedString(
+            "button.create.title",
+            comment: "Title of the create button"
+        )
+        button.configure(with: .createButton, for: localizedTitle)
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -109,7 +125,17 @@ final class CreateTrackerViewController: UIViewController {
     private var isRegular: Bool
     
     private lazy var titleCells: [String] = {
-        isRegular ? ["Категория", "Расписание"] : ["Категория"]
+        let localizedCategoryTitle = NSLocalizedString(
+            "category.title",
+            comment: "Title of the category cell in the table view"
+        )
+        let localizedScheduleTitle = NSLocalizedString(
+            "schedule.title",
+            comment: "Title of the schedule cell in the table view"
+        )
+        return isRegular ?
+        [localizedCategoryTitle, localizedScheduleTitle] :
+        [localizedCategoryTitle]
     }()
     
     private lazy var scheduleSubtitle: [Weekday] = {
@@ -158,7 +184,15 @@ private extension CreateTrackerViewController {
     }
     
     func addTopNavigationLabel() {
-        title = isRegular ? "Новая привычка" : "Новое нерегулярное событие"
+        let localizedRegularLabelTitle = NSLocalizedString(
+            "navBar.newRegularEvent.title",
+            comment: "Title of a new habit for the label in the navigation bar"
+        )
+        let localizedIrregularLabelTitle = NSLocalizedString(
+            "navBar.newIrregularEvent.title",
+            comment: "Title of a new irregular event for the label in the navigation bar"
+        )
+        title = isRegular ? localizedRegularLabelTitle : localizedIrregularLabelTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black
@@ -347,8 +381,14 @@ extension CreateTrackerViewController {
     }
     
     func getScheduleSubtitle(from selectedWeekdays: [Weekday]) -> String {
-        selectedWeekdays == Weekday.allCases ?
-        "Каждый день" : selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
+        let localizedEveryDayTitle = NSLocalizedString(
+            "everyDay",
+            comment: "Title of the subtitle of the schedule cell in the table view"
+        )
+        
+        return selectedWeekdays == Weekday.allCases ?
+        localizedEveryDayTitle :
+        selectedWeekdays.compactMap { $0.weekdayShortName }.joined(separator: ", ")
     }
 }
 

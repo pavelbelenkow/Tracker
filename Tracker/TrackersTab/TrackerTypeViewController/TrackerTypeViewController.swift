@@ -15,14 +15,22 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var regularTrackerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .standardButton, for: "Привычка")
+        let localizedTitle = NSLocalizedString(
+            "button.regularEvent.title",
+            comment: "Title of the habit button"
+        )
+        button.configure(with: .standardButton, for: localizedTitle)
         button.addTarget(self, action: #selector(regularTrackerButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var irregularTrackerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .standardButton, for: "Нерегулярное событие")
+        let localizedTitle = NSLocalizedString(
+            "button.irregularEvent.title",
+            comment: "Title of the irregular event button"
+        )
+        button.configure(with: .standardButton, for: localizedTitle)
         button.addTarget(self, action: #selector(irregularTrackerButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -46,7 +54,11 @@ final class TrackerTypeViewController: UIViewController {
 private extension TrackerTypeViewController {
     
     func addTopNavigationLabel() {
-        title = "Создание трекера"
+        let localizedTitle = NSLocalizedString(
+            "navBar.newTracker.title",
+            comment: "Title of the tracker's type selection in navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black

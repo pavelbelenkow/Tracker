@@ -171,21 +171,9 @@ private extension TrackerCell {
 
 private extension TrackerCell {
     
-    func getDaysText(_ completedDays: Int) -> String {
-        let lastTwoDigits = completedDays % 100
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
-            return "\(completedDays) дней"
-        } else {
-            switch completedDays % 10 {
-            case 1:
-                return "\(completedDays) день"
-            case 2...4:
-                return "\(completedDays) дня"
-            default:
-                return "\(completedDays) дней"
-            }
-        }
+    func getDaysText(_ number: Int) -> String {
+        let localizedCompletedDays = NSLocalizedString("completedDays", comment: "Number of completed days")
+        return String.localizedStringWithFormat(localizedCompletedDays, number)
     }
     
     func checkCompletedToday() {

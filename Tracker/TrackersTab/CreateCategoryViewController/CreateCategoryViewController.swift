@@ -15,14 +15,22 @@ final class CreateCategoryViewController: UIViewController {
     
     private lazy var categoryTitleTextField: UITextField = {
         let textField = UITextField()
-        textField.configure(with: "Введите название категории")
+        let localizedTitle = NSLocalizedString(
+            "textField.category.title",
+            comment: "Placeholder title of the text field for typing the category name"
+        )
+        textField.configure(with: localizedTitle)
         textField.delegate = self
         return textField
     }()
     
     private lazy var confirmButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .standardButton, for: "Готово")
+        let localizedTitle = NSLocalizedString(
+            "button.confirm.title",
+            comment: "Title of the button confirming the action of creating a new category"
+        )
+        button.configure(with: .standardButton, for: localizedTitle)
         button.backgroundColor = UIColor.TrackerColor.gray
         button.isEnabled = false
         button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
@@ -70,7 +78,11 @@ final class CreateCategoryViewController: UIViewController {
 private extension CreateCategoryViewController {
     
     func addTopNavigationLabel() {
-        title = "Новая категория"
+        let localizedTitle = NSLocalizedString(
+            "navBar.newCategory.title",
+            comment: "Title of the new category screen label in the navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black
