@@ -58,7 +58,7 @@ private extension TrackerRecordStore {
     }
     
     func fetchRecords(_ tracker: Tracker) throws -> [TrackerRecord] {
-        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         let predicate = NSPredicate(format: "tracker.trackerId = %@", tracker.id as CVarArg)
         request.predicate = predicate
         
@@ -75,7 +75,7 @@ private extension TrackerRecordStore {
     }
     
     func fetchTrackerCoreData(for trackerId: UUID) throws -> TrackerCoreData? {
-        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
         let predicate = NSPredicate(
             format: "%K == %@",
             #keyPath(TrackerCoreData.trackerId), trackerId as CVarArg
@@ -104,7 +104,7 @@ private extension TrackerRecordStore {
     }
     
     func fetchTrackerRecordCoreData(for recordId: UUID, and date: Date) throws -> TrackerRecordCoreData? {
-        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         let predicate = NSPredicate(
             format: "%K == %@ AND %K == %@",
             #keyPath(TrackerRecordCoreData.tracker.trackerId), recordId as CVarArg,
