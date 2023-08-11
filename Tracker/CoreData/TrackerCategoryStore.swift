@@ -53,7 +53,7 @@ final class TrackerCategoryStore: NSObject {
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         let categoryDescriptor = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.title, ascending: true)
         
         request.sortDescriptors = [categoryDescriptor]
@@ -129,7 +129,7 @@ private extension TrackerCategoryStore {
     }
     
     func fetchTrackerCategoryCoreData(for category: TrackerCategory) throws -> TrackerCategoryCoreData {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         let predicate = NSPredicate(format: "title == %@", category.title)
         
         request.predicate = predicate
@@ -141,20 +141,16 @@ private extension TrackerCategoryStore {
         return categoryCoreData
     }
     
-    func checkUniqueCategory(with title: String) throws {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        let predicate = NSPredicate(format: "title == %@", title)
+    func checkUniqueCategory(with title: String) throws -> Bool {
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        let predicate = NSPredicate(format: "title ==[c] %@", title)
         request.predicate = predicate
         
-        let count = try context.count(for: request)
-        
-        guard count == 0 else {
-            return
-        }
+        return try context.fetch(request).isEmpty
     }
     
     func addNewCategory(_ category: TrackerCategory) throws {
-        try checkUniqueCategory(with: category.title)
+        guard try checkUniqueCategory(with: category.title) else { return }
         
         let categoryCoreData = TrackerCategoryCoreData(context: context)
         categoryCoreData.title = category.title
