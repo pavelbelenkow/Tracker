@@ -90,6 +90,7 @@ extension TrackersCollectionView: UICollectionViewDataSource {
         }
         
         trackerCell.delegate = viewController
+        trackerCell.contextMenuDelegate = viewController
         trackerCell.configure(
             with: tracker,
             isCompletedToday: isCompletedToday,

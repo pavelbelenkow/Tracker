@@ -250,6 +250,26 @@ private extension TrackersViewController {
         updatePlaceholderViews()
         collectionView.reloadData()
     }
+    
+    func pinTracker(by id: UUID) {
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            try trackerStore.pinTracker(tracker)
+            reloadData()
+        } catch {
+            assertionFailure("Failed to pin tracker with \(error)")
+        }
+    }
+    
+    func unpinTracker(by id: UUID) {
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            try trackerStore.unpinTracker(tracker)
+            reloadData()
+        } catch {
+            assertionFailure("Failed to unpin tracker with \(error)")
+        }
+    }
 }
 
 // MARK: - Objective-C methods
@@ -352,6 +372,10 @@ extension TrackersViewController: TrackerCellDelegate {
         return selectedDate
     }
     
+    func isPinnedTracker(by trackerId: UUID) -> Bool {
+        trackerStore.isTrackerPinned(by: trackerId)
+    }
+    
     func reloadTrackersWithCategory() {
         reloadData()
     }
@@ -369,6 +393,44 @@ extension TrackersViewController: TrackerCellDelegate {
     }
 }
 
+// MARK: - ContextMenuInteractionDelegate methods
+
+extension TrackersViewController: ContextMenuInteractionDelegate {
+    
+    func contextMenuConfiguration(for trackerId: UUID) -> UIContextMenuConfiguration? {
+        let pinAction = UIAction(title: "Закрепить") { [weak self] _ in
+            guard let self else { return }
+            self.pinTracker(by: trackerId)
+        }
+        
+        let unpinAction = UIAction(title: "Открепить") { [weak self] _ in
+            guard let self else { return }
+            self.unpinTracker(by: trackerId)
+        }
+        
+        let editAction = UIAction(title: "Редактировать") { _ in
+            print("Tapped EDIT for tracker")
+        }
+        
+        let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { _ in
+            print("Tapped DELETE for tracker")
+        }
+        
+        let isTrackerPinned = trackerStore.isTrackerPinned(by: trackerId)
+        
+        var menuItems: [UIAction] = []
+        if isTrackerPinned {
+            menuItems = [unpinAction, editAction, deleteAction]
+        } else {
+            menuItems = [pinAction, editAction, deleteAction]
+        }
+        
+        let menu = UIMenu(children: menuItems)
+        
+        return UIContextMenuConfiguration(actionProvider: { _ in menu })
+    }
+}
+
 // MARK: - TrackerStoreDelegate methods
 
 extension TrackersViewController: TrackerStoreDelegate {
@@ -377,6 +439,16 @@ extension TrackersViewController: TrackerStoreDelegate {
         collectionView.performBatchUpdates {
             collectionView.insertSections(update.insertedSections)
             collectionView.insertItems(at: update.insertedIndexPaths)
+            
+            collectionView.deleteSections(update.deletedSections)
+            collectionView.deleteItems(at: update.deletedIndexPaths)
+            
+            collectionView.reloadSections(update.updatedSections)
+            collectionView.reloadItems(at: update.updatedIndexPaths)
+            
+            for move in update.movedIndexPaths {
+                collectionView.moveItem(at: move.oldIndexPath, to: move.newIndexPath)
+            }
         }
     }
 }

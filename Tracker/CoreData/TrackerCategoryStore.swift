@@ -31,9 +31,12 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 
 protocol TrackerCategoryStoreProtocol {
     func setDelegate(_ delegate: TrackerCategoryStoreDelegate)
+    func getTrackerCategory(from coreData: TrackerCategoryCoreData) throws -> TrackerCategory
     func getCategories() throws -> [TrackerCategory]
+    func fetchTrackerCategoryCoreData(title: String) throws -> TrackerCategoryCoreData
     func fetchCategoryCoreData(for category: TrackerCategory) throws -> TrackerCategoryCoreData
     func addCategory(_ category: TrackerCategory) throws
+    func getPinnedCategory() throws -> TrackerCategory
 }
 
 // MARK: - TrackerCategoryStore class
@@ -99,7 +102,7 @@ private extension TrackerCategoryStore {
         }
     }
     
-    func getTrackerCategory(from trackerCategoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
+    func getTrackerCategory(_ trackerCategoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCoreData.title else {
             throw TrackerCategoryStoreError.decodingErrorInvalidTitle
         }
@@ -124,13 +127,37 @@ private extension TrackerCategoryStore {
             throw TrackerCategoryStoreError.failedToFetchCategory
         }
         
-        let categories = try objects.map { try getTrackerCategory(from: $0) }
+        var categories = try objects.map { try getTrackerCategory(from: $0) }
+        let pinnedCategoryIndex = categories.firstIndex { $0.title == "Закрепленные" }
+        
+        if let pinnedCategoryIndex {
+            let pinnedCategory = categories.remove(at: pinnedCategoryIndex)
+            let pinnedCategoryTrackers = pinnedCategory.trackers.filter { $0.schedule != nil }
+            
+            if !pinnedCategoryTrackers.isEmpty {
+                categories.insert(pinnedCategory, at: 0)
+            }
+        }
+        
         return categories
     }
     
     func fetchTrackerCategoryCoreData(for category: TrackerCategory) throws -> TrackerCategoryCoreData {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         let predicate = NSPredicate(format: "title == %@", category.title)
+        
+        request.predicate = predicate
+        
+        guard let categoryCoreData = try context.fetch(request).first else {
+            throw TrackerCategoryStoreError.failedToFetchCategory
+        }
+        
+        return categoryCoreData
+    }
+    
+    func fetchTrackerCategoryCoreData(by title: String) throws -> TrackerCategoryCoreData {
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        let predicate = NSPredicate(format: "title == %@", title)
         
         request.predicate = predicate
         
@@ -157,6 +184,16 @@ private extension TrackerCategoryStore {
         categoryCoreData.trackers = NSSet()
         try saveContext()
     }
+    
+    func getPinnedCategoryForPinnedTrackers() throws -> TrackerCategory {
+        if let pinnedCategory = try getCategories().first(where: { $0.title == "Закрепленные" }) {
+            return pinnedCategory
+        } else {
+            let pinnedCategory = TrackerCategory(title: "Закрепленные", trackers: [])
+            try addNewCategory(pinnedCategory)
+            return pinnedCategory
+        }
+    }
 }
 
 // MARK: - Protocol methods
@@ -165,6 +202,10 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
     
     func setDelegate(_ delegate: TrackerCategoryStoreDelegate) {
         self.delegate = delegate
+    }
+    
+    func getTrackerCategory(from coreData: TrackerCategoryCoreData) throws -> TrackerCategory {
+        try getTrackerCategory(coreData)
     }
     
     func getCategories() throws -> [TrackerCategory] {
@@ -177,6 +218,14 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
     
     func addCategory(_ category: TrackerCategory) throws {
         try addNewCategory(category)
+    }
+    
+    func getPinnedCategory() throws -> TrackerCategory {
+        try getPinnedCategoryForPinnedTrackers()
+    }
+    
+    func fetchTrackerCategoryCoreData(title: String) throws -> TrackerCategoryCoreData {
+        try fetchTrackerCategoryCoreData(by: title)
     }
 }
 
