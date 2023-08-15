@@ -121,8 +121,8 @@ private extension TrackersViewController {
     func addSubviews() {
         addNavigationBar()
         addSearchTrackersTextField()
-        addFilterButton()
         addTrackersCollectionView()
+        addFilterButton()
         addPlaceholderView(placeholderView)
     }
     
@@ -159,7 +159,7 @@ private extension TrackersViewController {
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 34),
-            collectionView.bottomAnchor.constraint(equalTo: filterButton.topAnchor, constant: -16),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
