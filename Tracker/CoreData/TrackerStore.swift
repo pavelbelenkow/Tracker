@@ -51,6 +51,7 @@ protocol TrackerStoreProtocol {
     func pinTracker(_ tracker: Tracker) throws
     func unpinTracker(_ tracker: Tracker) throws
     func editTracker(_ tracker: Tracker, title: String, color: UIColor?, emoji: String, schedule: [Weekday]?, completedDays: Int, category: TrackerCategory) throws
+    func deleteTracker(_ tracker: Tracker) throws
 }
 
 // MARK: - TrackerStore class
@@ -287,6 +288,12 @@ private extension TrackerStore {
         
         try saveContext()
     }
+    
+    func deleteTracker(tracker: Tracker) throws {
+        let trackerCoreData = try fetchTrackerCoreData(for: tracker)
+        context.delete(trackerCoreData)
+        try saveContext()
+    }
 }
 
 // MARK: - Protocol methods
@@ -339,6 +346,10 @@ extension TrackerStore: TrackerStoreProtocol {
             completedDays: completedDays,
             category: category
         )
+    }
+    
+    func deleteTracker(_ tracker: Tracker) throws {
+        try deleteTracker(tracker: tracker)
     }
 }
 

@@ -271,6 +271,32 @@ private extension TrackersViewController {
         present(navigationController, animated: true)
     }
     
+    func presentDeleteAlert(
+        title: String,
+        message: String?,
+        deleteActionTitle: String,
+        cancelActionTitle: String,
+        deleteActionHandler: @escaping () -> Void
+    ) {
+        let deleteAction = UIAlertAction(
+            title: deleteActionTitle,
+            style: .destructive,
+            handler: { _ in deleteActionHandler() }
+        )
+        let cancelAction = UIAlertAction(title: cancelActionTitle, style: .cancel)
+
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .actionSheet
+        )
+
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true)
+    }
+    
     func pinTracker(by id: UUID) {
         do {
             let tracker = try trackerStore.getTracker(by: id)
@@ -304,6 +330,38 @@ private extension TrackersViewController {
             )
         } catch {
             assertionFailure("Failed to edit tracker with \(error)")
+        }
+    }
+    
+    func deleteTracker(by id: UUID) {
+        let localizedAlertTitle = NSLocalizedString(
+            "alert.delete.title",
+            comment: "Title of the tracker deletion alert"
+        )
+        let localizedDeleteTitle = NSLocalizedString(
+            "action.delete.title",
+            comment: "Title of the deletion action in the tracker deletion alert"
+        )
+        let localizedCancelTitle = NSLocalizedString(
+            "action.cancel.title",
+            comment: "Title of the cancel action in the tracker deletion alert"
+        )
+        
+        presentDeleteAlert(
+            title: localizedAlertTitle,
+            message: nil,
+            deleteActionTitle: localizedDeleteTitle,
+            cancelActionTitle: localizedCancelTitle
+        ) { [weak self] in
+            guard let self else { return }
+            
+            do {
+                let tracker = try self.trackerStore.getTracker(by: id)
+                try self.trackerStore.deleteTracker(tracker)
+                reloadData()
+            } catch {
+                assertionFailure("Failed to delete tracker with \(error)")
+            }
         }
     }
 }
@@ -447,34 +505,55 @@ extension TrackersViewController: TrackerCellDelegate {
 
 extension TrackersViewController: ContextMenuInteractionDelegate {
     
+    private func pinAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.pin.title",
+            comment: "Title of the pinning action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.pinTracker(by: trackerId)
+        }
+    }
+    
+    private func unpinAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.unpin.title",
+            comment: "Title of the unpinning action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.unpinTracker(by: trackerId)
+        }
+    }
+    
+    private func editAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.edit.title",
+            comment: "Title of the editing action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.editTracker(by: trackerId)
+        }
+    }
+    
+    private func deleteAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.delete.title",
+            comment: "Title of the deletion action in the tracker context menu"
+        )
+        return UIAction(title: title, attributes: [.destructive]) { [weak self] _ in
+            self?.deleteTracker(by: trackerId)
+        }
+    }
+    
     func contextMenuConfiguration(for trackerId: UUID) -> UIContextMenuConfiguration? {
-        let pinAction = UIAction(title: "Закрепить") { [weak self] _ in
-            guard let self else { return }
-            self.pinTracker(by: trackerId)
-        }
-        
-        let unpinAction = UIAction(title: "Открепить") { [weak self] _ in
-            guard let self else { return }
-            self.unpinTracker(by: trackerId)
-        }
-        
-        let editAction = UIAction(title: "Редактировать") { [weak self] _ in
-            guard let self else { return }
-            self.editTracker(by: trackerId)
-        }
-        
-        let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { _ in
-            print("Tapped DELETE for tracker")
-        }
-        
         let isTrackerPinned = trackerStore.isTrackerPinned(by: trackerId)
         
-        var menuItems: [UIAction] = []
-        if isTrackerPinned {
-            menuItems = [unpinAction, editAction, deleteAction]
-        } else {
-            menuItems = [pinAction, editAction, deleteAction]
-        }
+        let pinAction = pinAction(for: trackerId)
+        let unpinAction = unpinAction(for: trackerId)
+        let editAction = editAction(for: trackerId)
+        let deleteAction = deleteAction(for: trackerId)
+        
+        let menuItems = isTrackerPinned ? [unpinAction, editAction, deleteAction] : [pinAction, editAction, deleteAction]
         
         let menu = UIMenu(children: menuItems)
         

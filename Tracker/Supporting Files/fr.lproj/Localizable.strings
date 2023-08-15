@@ -20,8 +20,8 @@
 "navBar.newTracker.title" = "Création d'un traqueur";
 "navBar.newRegularEvent.title" = "Une nouvelle habitude";
 "navBar.newIrregularEvent.title" = "Nouvel événement irrégulier";
-"navBar.editRegularEvent.title" = "Modifier les habitudes";
-"navBar.editIrregularEvent.title" = "Modifier un événement irrégulier";
+"navBar.editRegularEvent.title" = "Édition d'habitudes";
+"navBar.editIrregularEvent.title" = "Édition d'un événement irrégulier";
 "navBar.newCategory.title" = "Nouvelle catégorie";
 
 "searchBar.placeholder.title" = "Recherche";
@@ -42,6 +42,14 @@
 "button.save.title" = "Enregistrer";
 "button.addCategory.title" = "Ajouter une catégorie";
 "button.confirm.title" = "Fait";
+
+"action.pin.title" = "Épingle";
+"action.unpin.title" = "Détacher";
+"action.edit.title" = "Éditer";
+"action.delete.title" = "Supprimer";
+"action.cancel.title" = "Annuler";
+
+"alert.delete.title" = "Vous êtes sûr de vouloir supprimer le traqueur?";
 
 "monday" = "Lundi";
 "tuesday" = "Mardi";

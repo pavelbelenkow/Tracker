@@ -43,6 +43,14 @@
 "button.addCategory.title" = "Додати категорію";
 "button.confirm.title" = "Готово";
 
+"action.pin.title" = "Закріпити";
+"action.unpin.title" = "Відкріпити";
+"action.edit.title" = "Редагувати";
+"action.delete.title" = "Видалити";
+"action.cancel.title" = "Скасувати";
+
+"alert.delete.title" = "Впевнені, що хочете видалити трекер?";
+
 "monday" = "Понеділок";
 "tuesday" = "Вівторок";
 "wednesday" = "Середа";

@@ -43,6 +43,14 @@
 "button.addCategory.title" = "Add category";
 "button.confirm.title" = "Done";
 
+"action.pin.title" = "Pin";
+"action.unpin.title" = "Unpin";
+"action.edit.title" = "Edit";
+"action.delete.title" = "Delete";
+"action.cancel.title" = "Cancel";
+
+"alert.delete.title" = "Sure you want to delete the tracker?";
+
 "monday" = "Monday";
 "tuesday" = "Tuesday";
 "wednesday" = "Wednesday";
