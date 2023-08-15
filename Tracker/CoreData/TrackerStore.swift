@@ -5,6 +5,7 @@
 //  Created by Pavel Belenkow on 16.07.2023.
 //
 
+import UIKit
 import CoreData
 
 // MARK: - Error enumeration
@@ -15,6 +16,7 @@ private enum TrackerStoreError: Error {
     case decodingErrorInvalidColor
     case decodingErrorInvalidEmoji
     case decodingErrorInvalidSchedule
+    case decodingErrorInvalidRecords
     case failedToFetchTracker
 }
 
@@ -48,6 +50,7 @@ protocol TrackerStoreProtocol {
     func isTrackerPinned(by id: UUID) -> Bool
     func pinTracker(_ tracker: Tracker) throws
     func unpinTracker(_ tracker: Tracker) throws
+    func editTracker(_ tracker: Tracker, title: String, color: UIColor?, emoji: String, schedule: [Weekday]?, completedDays: Int, category: TrackerCategory) throws
 }
 
 // MARK: - TrackerStore class
@@ -69,6 +72,10 @@ final class TrackerStore: NSObject {
     
     private lazy var trackerCategoryStore: TrackerCategoryStoreProtocol = {
         TrackerCategoryStore(context: context)
+    }()
+    
+    private lazy var trackerRecordStore: TrackerRecordStoreProtocol = {
+        TrackerRecordStore(context: context)
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
@@ -160,6 +167,10 @@ private extension TrackerStore {
         guard let scheduleString = trackerCoreData.schedule else {
             throw TrackerStoreError.decodingErrorInvalidSchedule
         }
+        
+        guard let completedDays = trackerCoreData.record?.count else {
+            throw TrackerStoreError.decodingErrorInvalidRecords
+        }
 
         let color = uiColorMarshalling.getColor(from: colorString)
         let schedule = Weekday.getWeekday(from: scheduleString)
@@ -169,7 +180,8 @@ private extension TrackerStore {
             title: title,
             color: color,
             emoji: emoji,
-            schedule: schedule
+            schedule: schedule,
+            completedDays: completedDays
         )
     }
 
@@ -246,6 +258,35 @@ private extension TrackerStore {
         
         try saveContext()
     }
+    
+    func editTracker(
+        _ tracker: Tracker,
+        with title: String,
+        color: UIColor?,
+        emoji: String,
+        schedule: [Weekday]?,
+        completedDays: Int,
+        category: TrackerCategory
+    ) throws {
+        let trackerCoreData = try fetchTrackerCoreData(for: tracker)
+        trackerCoreData.title = title
+        trackerCoreData.originalCategoryTitle = category.title
+        trackerCoreData.emoji = emoji
+        trackerCoreData.color = uiColorMarshalling.getHexString(from: color)
+        trackerCoreData.schedule = Weekday.getString(from: schedule)
+        
+        let previousCategoryCoreData = trackerCoreData.category
+        let newCategoryCoreData = try trackerCategoryStore.fetchCategoryCoreData(for: category)
+        
+        if previousCategoryCoreData != newCategoryCoreData {
+            previousCategoryCoreData?.removeFromTrackers(trackerCoreData)
+            newCategoryCoreData.addToTrackers(trackerCoreData)
+            
+            trackerCoreData.category = newCategoryCoreData
+        }
+        
+        try saveContext()
+    }
 }
 
 // MARK: - Protocol methods
@@ -278,6 +319,26 @@ extension TrackerStore: TrackerStoreProtocol {
     
     func unpinTracker(_ tracker: Tracker) throws {
         try unpinTracker(tracker: tracker)
+    }
+    
+    func editTracker(
+        _ tracker: Tracker,
+        title: String,
+        color: UIColor?,
+        emoji: String,
+        schedule: [Weekday]?,
+        completedDays: Int,
+        category: TrackerCategory
+    ) throws {
+        try editTracker(
+            tracker,
+            with: title,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            completedDays: completedDays,
+            category: category
+        )
     }
 }
 

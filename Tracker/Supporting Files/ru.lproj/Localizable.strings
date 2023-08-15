@@ -20,6 +20,8 @@
 "navBar.newTracker.title" = "Создание трекера";
 "navBar.newRegularEvent.title" = "Новая привычка";
 "navBar.newIrregularEvent.title" = "Новое нерегулярное событие";
+"navBar.editRegularEvent.title" = "Редактирование привычки";
+"navBar.editIrregularEvent.title" = "Редактирование нерегулярного события";
 "navBar.newCategory.title" = "Новая категория";
 
 "searchBar.placeholder.title" = "Поиск";
@@ -37,6 +39,7 @@
 "button.irregularEvent.title" = "Нерегулярное событие";
 "button.cancel.title" = "Отменить";
 "button.create.title" = "Создать";
+"button.save.title" = "Сохранить";
 "button.addCategory.title" = "Добавить категорию";
 "button.confirm.title" = "Готово";
 

@@ -20,6 +20,8 @@
 "navBar.newTracker.title" = "Create tracker";
 "navBar.newRegularEvent.title" = "New habit";
 "navBar.newIrregularEvent.title" = "New irregular event";
+"navBar.editRegularEvent.title" = "Habit editing";
+"navBar.editIrregularEvent.title" = "Editing irregular event";
 "navBar.newCategory.title" = "New category";
 
 "searchBar.placeholder.title" = "Search";
@@ -37,6 +39,7 @@
 "button.irregularEvent.title" = "Irregular event";
 "button.cancel.title" = "Cancel";
 "button.create.title" = "Create";
+"button.save.title" = "Save";
 "button.addCategory.title" = "Add category";
 "button.confirm.title" = "Done";
 

@@ -15,6 +15,7 @@ protocol TrackerCellDelegate: AnyObject {
     func reloadTrackersWithCategory()
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    func updateTracker(_ tracker: Tracker, with completedDays: Int)
 }
 
 protocol ContextMenuInteractionDelegate: AnyObject {

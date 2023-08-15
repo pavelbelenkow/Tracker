@@ -13,6 +13,8 @@ protocol UpdateTrackerInformationDelegate: AnyObject {
     func updateScheduleSubtitle(from weekday: [Weekday]?, at selectedWeekday: [Int: Bool])
     func updateSelectedEmoji(_ emoji: String)
     func updateSelectedColor(_ color: UIColor)
+    func getSelectedEmoji() -> String
+    func getSelectedColor() -> UIColor?
 }
 
 // MARK: - ViewController class
@@ -32,6 +34,37 @@ final class CreateTrackerViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    private lazy var completedDaysStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
+        view.distribution = .fill
+        view.spacing = 24
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var completedDaysLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.TrackerColor.black
+        label.font = UIFont.TrackerFont.bold32
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var plusButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configure(with: .plus)
+        button.addTarget(self, action: #selector(appendDays), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var minusButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configure(with: .minus)
+        button.addTarget(self, action: #selector(reduceDays), for: .touchUpInside)
+        return button
     }()
     
     private lazy var stackView: UIStackView = {
@@ -103,10 +136,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        let localizedTitle = NSLocalizedString(
-            "button.create.title",
-            comment: "Title of the create button"
-        )
+        let localizedTitle = getCreateButtonTitle()
         button.configure(with: .createButton, for: localizedTitle)
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         return button
@@ -116,6 +146,10 @@ final class CreateTrackerViewController: UIViewController {
     private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
     private let viewModel: CategoryViewModel
     
+    private var tracker: Tracker?
+    private var trackerCategory: TrackerCategory?
+    
+    private var completedDays = 0
     private var trackerTitle = ""
     private var categorySubtitle = ""
     private var selectedWeekdays: [Int: Bool] = [:]
@@ -123,20 +157,11 @@ final class CreateTrackerViewController: UIViewController {
     private var color: UIColor?
     
     private var isRegular: Bool
+    private var isEditViewController: Bool?
+    private var isTrackerCompletedToday: Bool?
     
-    private lazy var titleCells: [String] = {
-        let localizedCategoryTitle = NSLocalizedString(
-            "category.title",
-            comment: "Title of the category cell in the table view"
-        )
-        let localizedScheduleTitle = NSLocalizedString(
-            "schedule.title",
-            comment: "Title of the schedule cell in the table view"
-        )
-        return isRegular ?
-        [localizedCategoryTitle, localizedScheduleTitle] :
-        [localizedCategoryTitle]
-    }()
+    private lazy var barTitle: String = getNavigationBarTitle()
+    private lazy var titleCells: [String] = getTitleCells()
     
     private lazy var scheduleSubtitle: [Weekday] = {
         isRegular ? [] : Weekday.allCases
@@ -153,6 +178,22 @@ final class CreateTrackerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    init(
+        tracker: Tracker,
+        category: TrackerCategory?,
+        isCompletedToday: Bool,
+        isRegular: Bool,
+        isEditViewController: Bool
+    ) {
+        self.tracker = tracker
+        self.trackerCategory = category
+        self.isTrackerCompletedToday = isCompletedToday
+        self.isRegular = isRegular
+        self.isEditViewController = isEditViewController
+        self.viewModel = CategoryViewModel()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -164,6 +205,8 @@ final class CreateTrackerViewController: UIViewController {
         view.backgroundColor = UIColor.TrackerColor.white
         
         addSubviews()
+        fillTrackerData()
+        checkDate()
         updateCategorySubtitleAndIndexCategory()
         updateCreateButton()
     }
@@ -177,6 +220,9 @@ private extension CreateTrackerViewController {
         addTopNavigationLabel()
         addScrollView()
         addContentView()
+        if isEditViewController ?? false {
+            addCompletedDaysStackView()
+        }
         addStackView()
         addTableView()
         addCollectionView()
@@ -184,15 +230,7 @@ private extension CreateTrackerViewController {
     }
     
     func addTopNavigationLabel() {
-        let localizedRegularLabelTitle = NSLocalizedString(
-            "navBar.newRegularEvent.title",
-            comment: "Title of a new habit for the label in the navigation bar"
-        )
-        let localizedIrregularLabelTitle = NSLocalizedString(
-            "navBar.newIrregularEvent.title",
-            comment: "Title of a new irregular event for the label in the navigation bar"
-        )
-        title = isRegular ? localizedRegularLabelTitle : localizedIrregularLabelTitle
+        title = barTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black
@@ -222,13 +260,28 @@ private extension CreateTrackerViewController {
         ])
     }
     
+    func addCompletedDaysStackView() {
+        contentView.addSubview(completedDaysStackView)
+        completedDaysStackView.addArrangedSubview(minusButton)
+        completedDaysStackView.addArrangedSubview(completedDaysLabel)
+        completedDaysStackView.addArrangedSubview(plusButton)
+        
+        NSLayoutConstraint.activate([
+            completedDaysStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            completedDaysStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+        ])
+    }
+    
     func addStackView() {
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(trackerTitleTextField)
         stackView.addArrangedSubview(symbolsConstraintLabel)
         
+        let topAnchor = isEditViewController ?? false ? completedDaysStackView.bottomAnchor : contentView.topAnchor
+        let constant: CGFloat = isEditViewController ?? false ? 40 : 24
+        
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: constant),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
@@ -275,16 +328,91 @@ private extension CreateTrackerViewController {
 
 private extension CreateTrackerViewController {
     
-    func updateCreateButton() {
-        let isButtonEnabled =
-        !(trackerTitleTextField.text?.isEmpty ?? true) &&
-        !categorySubtitle.isEmpty &&
-        !scheduleSubtitle.isEmpty &&
-        !emoji.isEmpty &&
-        color != nil
+    func getNavigationBarTitle() -> String {
+        let editRegularTitle = NSLocalizedString(
+            "navBar.editRegularEvent.title",
+            comment: "Title of habit editing for the label in the navigation bar"
+        )
+        let editIrregularTitle = NSLocalizedString(
+            "navBar.editIrregularEvent.title",
+            comment: "Title of irregular event editing for the label in the navigation bar"
+        )
+        let newRegularTitle = NSLocalizedString(
+            "navBar.newRegularEvent.title",
+            comment: "Title of a new habit for the label in the navigation bar"
+        )
+        let newIrregularTitle = NSLocalizedString(
+            "navBar.newIrregularEvent.title",
+            comment: "Title of a new irregular event for the label in the navigation bar"
+        )
         
-        createButton.isEnabled = isButtonEnabled
-        createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
+        let editTitle = isRegular ? editRegularTitle : editIrregularTitle
+        let newTitle = isRegular ? newRegularTitle : newIrregularTitle
+        
+        guard let isEditViewController else { return newTitle }
+        
+        return isEditViewController ? editTitle : newTitle
+    }
+    
+    func getTitleCells() -> [String] {
+        let localizedCategoryTitle = NSLocalizedString(
+            "category.title",
+            comment: "Title of the category cell in the table view"
+        )
+        let localizedScheduleTitle = NSLocalizedString(
+            "schedule.title",
+            comment: "Title of the schedule cell in the table view"
+        )
+        
+        return isRegular ?
+        [localizedCategoryTitle, localizedScheduleTitle] :
+        [localizedCategoryTitle]
+    }
+    
+    func getCreateButtonTitle() -> String {
+        let createTitle = NSLocalizedString(
+            "button.create.title",
+            comment: "Title of the create button"
+        )
+        let saveTitle = NSLocalizedString(
+            "button.save.title",
+            comment: "Title of the save button"
+        )
+        
+        guard let isEditViewController else { return createTitle }
+        
+        return isEditViewController ? saveTitle : createTitle
+    }
+    
+    func getDaysText(_ completedDays: Int) -> String {
+        let localizedCompletedDays = NSLocalizedString("completedDays", comment: "Number of completed days")
+        return String.localizedStringWithFormat(localizedCompletedDays, completedDays)
+    }
+    
+    func fillTrackerData() {
+        if let tracker {
+            completedDays = tracker.completedDays
+            completedDaysLabel.text = getDaysText(completedDays)
+            trackerTitleTextField.text = tracker.title
+            categorySubtitle = trackerCategory?.title ?? ""
+            scheduleSubtitle = tracker.schedule ?? [Weekday]()
+            emoji = tracker.emoji
+            color = tracker.color
+        }
+    }
+    
+    func checkDate() {
+        let isCompleted = isTrackerCompletedToday ?? false
+        let currentDate = Date()
+        let selectedDate = delegate?.getSelectedDate() ?? currentDate
+        let isToday = Calendar.current.isDate(currentDate, inSameDayAs: selectedDate)
+        let isEnabled = isToday && !isCompleted
+        
+        plusButton.isEnabled = isEnabled
+        plusButton.layer.opacity = isEnabled ? 1.0 : 0.3
+        
+        minusButton.isEnabled = isToday && isCompleted
+        minusButton.layer.opacity = isCompleted ? 1.0 : 0.3
     }
     
     func updateCategorySubtitleAndIndexCategory() {
@@ -301,6 +429,18 @@ private extension CreateTrackerViewController {
         }
     }
     
+    func updateCreateButton() {
+        let isButtonEnabled =
+        !(trackerTitleTextField.text?.isEmpty ?? true) &&
+        !categorySubtitle.isEmpty &&
+        !scheduleSubtitle.isEmpty &&
+        !emoji.isEmpty &&
+        color != nil
+        
+        createButton.isEnabled = isButtonEnabled
+        createButton.backgroundColor = isButtonEnabled ? UIColor.TrackerColor.black : UIColor.TrackerColor.gray
+    }
+    
     func createTracker() {
         guard let trackerTitle = trackerTitleTextField.text, !trackerTitle.isEmpty else {
             return
@@ -311,7 +451,8 @@ private extension CreateTrackerViewController {
             title: trackerTitle,
             color: color ?? UIColor(),
             emoji: emoji,
-            schedule: scheduleSubtitle
+            schedule: scheduleSubtitle,
+            completedDays: 0
         )
         
         let categoryTitle = categorySubtitle
@@ -339,6 +480,30 @@ private extension CreateTrackerViewController {
         }
     }
     
+    func updateTracker() {
+        guard
+            let tracker,
+            let trackerTitle = trackerTitleTextField.text, !trackerTitle.isEmpty,
+            let category = viewModel.getSelectedCategory(from: indexCategory)
+        else { return }
+        
+        do {
+            try trackerStore.editTracker(
+                tracker,
+                title: trackerTitle,
+                color: color,
+                emoji: emoji,
+                schedule: scheduleSubtitle,
+                completedDays: completedDays,
+                category: category
+                )
+        } catch {
+            assertionFailure("Failed to edit tracker with \(error)")
+        }
+        
+        delegate?.updateTracker(tracker, with: completedDays)
+    }
+    
     func dismissViewControllers() {
         var currentViewController = self.presentingViewController
         
@@ -349,12 +514,38 @@ private extension CreateTrackerViewController {
         currentViewController?.dismiss(animated: true)
     }
     
+    func checkTrackerCompletedToday(_ isCompleted: Bool?) {
+        guard let isCompleted else { return }
+        
+        plusButton.isEnabled = !isCompleted
+        plusButton.layer.opacity = !isCompleted ? 1.0 : 0.3
+        
+        minusButton.isEnabled = isCompleted
+        minusButton.layer.opacity = isCompleted ? 1.0 : 0.3
+    }
+    
+    func setCompletedDaysText(_ completedDays: Int) {
+        isTrackerCompletedToday?.toggle()
+        completedDaysLabel.text = getDaysText(completedDays)
+        checkTrackerCompletedToday(isTrackerCompletedToday)
+    }
+    
+    @objc func appendDays() {
+        completedDays += 1
+        setCompletedDaysText(completedDays)
+    }
+    
+    @objc func reduceDays() {
+        completedDays -= 1
+        setCompletedDaysText(completedDays)
+    }
+    
     @objc func cancelButtonTapped() {
         self.dismiss(animated: true)
     }
     
     @objc func createButtonTapped() {
-        createTracker()
+        tracker == nil ? createTracker() : updateTracker()
         delegate?.reloadTrackersWithCategory()
         dismissViewControllers()
     }
@@ -453,5 +644,13 @@ extension CreateTrackerViewController: UpdateTrackerInformationDelegate {
     func updateSelectedColor(_ color: UIColor) {
         self.color = color
         updateCreateButton()
+    }
+    
+    func getSelectedEmoji() -> String {
+        emoji
+    }
+    
+    func getSelectedColor() -> UIColor? {
+        color
     }
 }

@@ -8,8 +8,8 @@
 import UIKit
 
 final class UIColorMarshalling {
-    func getHexString(from color: UIColor) -> String {
-        let components = color.cgColor.components
+    func getHexString(from color: UIColor?) -> String {
+        let components = color?.cgColor.components
         let r: CGFloat = components?[0] ?? 0.0
         let g: CGFloat = components?[1] ?? 0.0
         let b: CGFloat = components?[2] ?? 0.0

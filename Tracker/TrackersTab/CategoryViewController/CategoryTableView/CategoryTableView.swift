@@ -91,12 +91,9 @@ extension CategoryTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.selectedIndexPath.flatMap { tableView.cellForRow(at: $0) }?.accessoryType = .none
         
-        viewModel.getSelectedCategory(from: indexPath)
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        
-        viewModel.didSelectCategory?(
-            viewModel.listOfCategories[indexPath.row].title,
-            viewModel.selectedIndexPath
-        )
+        if let selectedCategory = viewModel.getSelectedCategory(from: indexPath) {
+            viewModel.didSelectCategory?(selectedCategory.title, viewModel.selectedIndexPath)
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
     }
 }

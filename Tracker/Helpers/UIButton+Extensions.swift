@@ -82,3 +82,32 @@ extension UIButton {
         heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
 }
+
+extension UIButton {
+    enum CounterButton {
+        case plus
+        case minus
+        
+        var image: UIImage {
+            let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
+            switch self {
+            case .plus:
+                return UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
+            case .minus:
+                return UIImage(systemName: "minus", withConfiguration: pointSize) ?? UIImage()
+            }
+        }
+    }
+    
+    func configure(with counterButton: CounterButton) {
+        backgroundColor = UIColor.TrackerColor.black
+        tintColor = UIColor.TrackerColor.white
+        setImage(counterButton.image, for: .normal)
+        
+        layer.cornerRadius = 17
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor.constraint(equalToConstant: 34).isActive = true
+        widthAnchor.constraint(equalToConstant: 34).isActive = true
+    }
+}

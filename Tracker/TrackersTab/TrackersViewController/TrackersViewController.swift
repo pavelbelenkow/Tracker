@@ -251,6 +251,26 @@ private extension TrackersViewController {
         collectionView.reloadData()
     }
     
+    func presentTrackerViewController(
+        for tracker: Tracker,
+        with category: TrackerCategory?,
+        isTrackerCompleteToday: Bool
+    ) {
+        let isRegular = tracker.schedule != Weekday.allCases ? true : false
+        
+        let viewController = CreateTrackerViewController(
+            tracker: tracker,
+            category: category,
+            isCompletedToday: isTrackerCompleteToday,
+            isRegular: isRegular,
+            isEditViewController: true
+        )
+        viewController.delegate = self
+        
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
+    }
+    
     func pinTracker(by id: UUID) {
         do {
             let tracker = try trackerStore.getTracker(by: id)
@@ -268,6 +288,22 @@ private extension TrackersViewController {
             reloadData()
         } catch {
             assertionFailure("Failed to unpin tracker with \(error)")
+        }
+    }
+    
+    func editTracker(by id: UUID) {
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            let trackerCategory = categories.first(where: { $0.trackers.contains(where: { $0.id == id }) })
+            let isTrackerCompletedToday = isTrackerCompletedToday(id: id, tracker: tracker)
+            
+            presentTrackerViewController(
+                for: tracker,
+                with: trackerCategory,
+                isTrackerCompleteToday: isTrackerCompletedToday
+            )
+        } catch {
+            assertionFailure("Failed to edit tracker with \(error)")
         }
     }
 }
@@ -391,6 +427,20 @@ extension TrackersViewController: TrackerCellDelegate {
         try? trackerRecordStore.deleteRecord(with: trackerRecord.trackerId, by: trackerRecord.date)
         collectionView.reloadItems(at: [indexPath])
     }
+    
+    func updateTracker(_ tracker: Tracker, with completedDays: Int) {
+        let trackerRecords = try? trackerRecordStore.fetchRecords(for: tracker)
+        let trackerRecordDate = trackerRecords?.first(where: { $0.trackerId == tracker.id })
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.id, tracker: tracker)
+        
+        if tracker.completedDays != completedDays {
+            if isCompletedToday {
+                try? trackerRecordStore.deleteRecord(with: tracker.id, by: trackerRecordDate?.date ?? Date())
+            } else {
+                try? trackerRecordStore.addRecord(with: tracker.id, by: trackerRecordDate?.date ?? Date())
+            }
+        }
+    }
 }
 
 // MARK: - ContextMenuInteractionDelegate methods
@@ -408,8 +458,9 @@ extension TrackersViewController: ContextMenuInteractionDelegate {
             self.unpinTracker(by: trackerId)
         }
         
-        let editAction = UIAction(title: "Редактировать") { _ in
-            print("Tapped EDIT for tracker")
+        let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+            guard let self else { return }
+            self.editTracker(by: trackerId)
         }
         
         let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { _ in
