@@ -93,13 +93,26 @@ final class TrackersViewController: UIViewController {
         )
     }()
     
-    private let trackerStore: TrackerStoreProtocol = TrackerStore()
-    private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
-    private let trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
+    private let trackerStore: TrackerStoreProtocol
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
+    
+    // MARK: - Initializers
+    
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()) {
+        self.trackerStore = TrackerStore()
+        self.trackerCategoryStore = trackerCategoryStore
+        self.trackerRecordStore = TrackerRecordStore()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
     

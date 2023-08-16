@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		590336842A819FFB007E4595 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 590336832A819FFB007E4595 /* SnapshotTesting */; };
 		590806102A5CDD5A00B0601D /* CreateTrackerCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5908060F2A5CDD5A00B0601D /* CreateTrackerCollectionView.swift */; };
 		590806122A5CE58B00B0601D /* TrackerEmoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590806112A5CE58B00B0601D /* TrackerEmoji.swift */; };
 		594249A42A7D937200433C27 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 594249A62A7D937200433C27 /* Localizable.strings */; };
@@ -41,7 +42,6 @@
 		5983E3B12A437080005807CB /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5983E3B02A437080005807CB /* Tracker.swift */; };
 		5983E3B32A43709C005807CB /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5983E3B22A43709C005807CB /* TrackerCategory.swift */; };
 		5983E3B52A4370A9005807CB /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5983E3B42A4370A9005807CB /* TrackerRecord.swift */; };
-		5988FD3A2A818BB700052445 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 5988FD392A818BB700052445 /* SnapshotTesting */; };
 		5988FD422A818E3800052445 /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5988FD412A818E3800052445 /* TrackerTests.swift */; };
 		598C2E812A5640C7005A4355 /* WeekdayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598C2E802A5640C7005A4355 /* WeekdayCell.swift */; };
 		59C918D52A3CF27100AA0FDD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C918D42A3CF27100AA0FDD /* AppDelegate.swift */; };
@@ -59,6 +59,8 @@
 		59F1C9CE2A76FE0E0087F78D /* CategoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F1C9CD2A76FE0E0087F78D /* CategoryTableView.swift */; };
 		59F1C9D12A7706DB0087F78D /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F1C9D02A7706DB0087F78D /* CategoryViewModel.swift */; };
 		59F1C9D32A770B850087F78D /* CategoryObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F1C9D22A770B850087F78D /* CategoryObservable.swift */; };
+		59F23CF12A8C184100575709 /* StatisticsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F23CF02A8C184100575709 /* StatisticsCollectionView.swift */; };
+		59F23CF32A8C186800575709 /* StatisticsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F23CF22A8C186800575709 /* StatisticsCell.swift */; };
 		59F967862A4E025700A40F15 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F967852A4E025700A40F15 /* GeometricParams.swift */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +138,8 @@
 		59F1C9CD2A76FE0E0087F78D /* CategoryTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableView.swift; sourceTree = "<group>"; };
 		59F1C9D02A7706DB0087F78D /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		59F1C9D22A770B850087F78D /* CategoryObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryObservable.swift; sourceTree = "<group>"; };
+		59F23CF02A8C184100575709 /* StatisticsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCollectionView.swift; sourceTree = "<group>"; };
+		59F23CF22A8C186800575709 /* StatisticsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCell.swift; sourceTree = "<group>"; };
 		59F967852A4E025700A40F15 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				590336842A819FFB007E4595 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,7 +156,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5988FD3A2A818BB700052445 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				59CF12932A4618E7002A5BD0 /* StatisticsViewController.swift */,
+				59F23CEF2A8C181300575709 /* StatisticsCollectionView */,
 			);
 			path = StatisticsViewController;
 			sourceTree = "<group>";
@@ -326,6 +331,13 @@
 			path = TrackerTests;
 			sourceTree = "<group>";
 		};
+		5988FD482A8194BA00052445 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		598C2E7F2A5640A5005A4355 /* ScheduleTableView */ = {
 			isa = PBXGroup;
 			children = (
@@ -381,6 +393,7 @@
 				59C918D32A3CF27100AA0FDD /* Tracker */,
 				5988FD402A818E3800052445 /* TrackerTests */,
 				59C918D22A3CF27100AA0FDD /* Products */,
+				5988FD482A8194BA00052445 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -411,6 +424,15 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
+		59F23CEF2A8C181300575709 /* StatisticsCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				59F23CF02A8C184100575709 /* StatisticsCollectionView.swift */,
+				59F23CF22A8C186800575709 /* StatisticsCell.swift */,
+			);
+			path = StatisticsCollectionView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -428,6 +450,9 @@
 				5988FD442A818E3800052445 /* PBXTargetDependency */,
 			);
 			name = TrackerTests;
+			packageProductDependencies = (
+				590336832A819FFB007E4595 /* SnapshotTesting */,
+			);
 			productName = TrackerTests;
 			productReference = 5988FD3F2A818E3800052445 /* TrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -446,7 +471,6 @@
 			);
 			name = Tracker;
 			packageProductDependencies = (
-				5988FD392A818BB700052445 /* SnapshotTesting */,
 			);
 			productName = Tracker;
 			productReference = 59C918D12A3CF27100AA0FDD /* Tracker.app */;
@@ -484,7 +508,7 @@
 			);
 			mainGroup = 59C918C82A3CF27100AA0FDD;
 			packageReferences = (
-				5988FD382A818BB700052445 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				590336822A819FFB007E4595 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = 59C918D22A3CF27100AA0FDD /* Products */;
 			projectDirPath = "";
@@ -557,6 +581,7 @@
 				597E60BD2A7879070030E05A /* SubtitleCell.swift in Sources */,
 				59DD99452A48BED4008406C5 /* Weekday.swift in Sources */,
 				5983E3AE2A435C60005807CB /* UIImage+Extensions.swift in Sources */,
+				59F23CF32A8C186800575709 /* StatisticsCell.swift in Sources */,
 				59F967862A4E025700A40F15 /* GeometricParams.swift in Sources */,
 				596055312A644BFF0035F228 /* Tracker.xcdatamodeld in Sources */,
 				594E6ABB2A522E550012E691 /* CategoryCell.swift in Sources */,
@@ -566,6 +591,7 @@
 				590806102A5CDD5A00B0601D /* CreateTrackerCollectionView.swift in Sources */,
 				59570D022A75D25E0049CA12 /* OnboardingViewController.swift in Sources */,
 				5983E3AB2A43506E005807CB /* UIFont+Extensions.swift in Sources */,
+				59F23CF12A8C184100575709 /* StatisticsCollectionView.swift in Sources */,
 				59CE443A2A4E2BC800EAC98A /* TrackerSectionHeader.swift in Sources */,
 				59E0A3CC2A5F6BE50012E32C /* EmojiCell.swift in Sources */,
 				59F1C9D12A7706DB0087F78D /* CategoryViewModel.swift in Sources */,
@@ -647,6 +673,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pavelbelenkow.TrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -666,6 +695,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pavelbelenkow.TrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -882,7 +914,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5988FD382A818BB700052445 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+		590336822A819FFB007E4595 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
@@ -893,9 +925,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5988FD392A818BB700052445 /* SnapshotTesting */ = {
+		590336832A819FFB007E4595 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5988FD382A818BB700052445 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			package = 590336822A819FFB007E4595 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */

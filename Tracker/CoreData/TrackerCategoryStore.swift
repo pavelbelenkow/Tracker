@@ -127,7 +127,7 @@ private extension TrackerCategoryStore {
             throw TrackerCategoryStoreError.failedToFetchCategory
         }
         
-        var categories = try objects.map { try getTrackerCategory(from: $0) }
+        var categories = try objects.map { try getTrackerCategory($0) }
         let pinnedCategoryIndex = categories.firstIndex { $0.title == "Закрепленные" }
         
         if let pinnedCategoryIndex {
