@@ -97,6 +97,8 @@ final class TrackersViewController: UIViewController {
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
     private let trackerRecordStore: TrackerRecordStoreProtocol
     
+    private let analyticsService = AnalyticsService()
+    
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
@@ -124,6 +126,16 @@ final class TrackersViewController: UIViewController {
         
         addSubviews()
         reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analyticsService.report(event: "open", params: ["screen" : "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
     }
 }
 
@@ -331,6 +343,14 @@ private extension TrackersViewController {
     }
     
     func editTracker(by id: UUID) {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "edit"
+            ]
+        )
+        
         do {
             let tracker = try trackerStore.getTracker(by: id)
             let trackerCategory = categories.first(where: { $0.trackers.contains(where: { $0.id == id }) })
@@ -347,6 +367,14 @@ private extension TrackersViewController {
     }
     
     func deleteTracker(by id: UUID) {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "delete"
+            ]
+        )
+        
         let localizedAlertTitle = NSLocalizedString(
             "alert.delete.title",
             comment: "Title of the tracker deletion alert"
@@ -384,6 +412,14 @@ private extension TrackersViewController {
 private extension TrackersViewController {
     
     @objc func addTrackerButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "add_track"
+            ]
+        )
+        
         let trackerTypeViewController = TrackerTypeViewController()
         trackerTypeViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: trackerTypeViewController)
@@ -403,6 +439,13 @@ private extension TrackersViewController {
     }
     
     @objc func filterButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "filter"
+            ]
+        )
         print("Filter button tapped")
     }
 }

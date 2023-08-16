@@ -107,6 +107,8 @@ final class TrackerCell: UICollectionViewCell {
         return interaction
     }()
     
+    private let analyticsService = AnalyticsService()
+    
     private let currentDate: Date? = nil
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
@@ -231,6 +233,14 @@ private extension TrackerCell {
     }
     
     @objc func appendDayButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "track"
+            ]
+        )
+        
         guard let trackerId, let indexPath else {
             assert(false, "ID not found")
             return
