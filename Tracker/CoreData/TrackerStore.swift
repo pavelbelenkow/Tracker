@@ -43,6 +43,7 @@ protocol TrackerStoreDelegate: AnyObject {
 }
 
 protocol TrackerStoreProtocol {
+    var trackersCoreData: [TrackerCoreData] { get }
     func setDelegate(_ delegate: TrackerStoreDelegate)
     func getTracker(_ trackerCoreData: TrackerCoreData) throws -> Tracker
     func getTracker(by id: UUID) throws -> Tracker
@@ -98,12 +99,8 @@ final class TrackerStore: NSObject {
         return controller
     }()
 
-    var trackers: [Tracker] {
-        guard
-            let objects = self.fetchedResultsController.fetchedObjects,
-            let trackers = try? objects.map({ try self.getTracker(from: $0) })
-        else { return [] }
-        return trackers
+    private var trackers: [TrackerCoreData] {
+        fetchedResultsController.fetchedObjects ?? []
     }
     
     weak var delegate: TrackerStoreDelegate?
@@ -299,6 +296,8 @@ private extension TrackerStore {
 // MARK: - Protocol methods
 
 extension TrackerStore: TrackerStoreProtocol {
+    
+    var trackersCoreData: [TrackerCoreData] { trackers }
     
     func setDelegate(_ delegate: TrackerStoreDelegate) {
         self.delegate = delegate

@@ -17,6 +17,7 @@ private enum TrackerRecordStoreError: Error {
 // MARK: - Protocols
 
 protocol TrackerRecordStoreProtocol {
+    var recordsCoreData: [TrackerRecordCoreData] { get }
     func fetchRecords(for tracker: Tracker) throws -> [TrackerRecord]
     func addRecord(with id: UUID, by date: Date) throws
     func deleteRecord(with id: UUID, by date: Date) throws
@@ -29,6 +30,19 @@ final class TrackerRecordStore: NSObject {
     // MARK: - Properties
     
     private let context: NSManagedObjectContext
+    
+    private var records: [TrackerRecordCoreData] {
+        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        
+        do {
+            let records = try context.fetch(request)
+            return records
+        } catch {
+            assertionFailure("Failed to fetch records with \(error)")
+            return []
+        }
+    }
     
     // MARK: - Initializers
     
@@ -133,6 +147,8 @@ private extension TrackerRecordStore {
 // MARK: - Protocol methods
 
 extension TrackerRecordStore: TrackerRecordStoreProtocol {
+    
+    var recordsCoreData: [TrackerRecordCoreData] { records }
     
     func fetchRecords(for tracker: Tracker) throws -> [TrackerRecord] {
         try fetchRecords(tracker)

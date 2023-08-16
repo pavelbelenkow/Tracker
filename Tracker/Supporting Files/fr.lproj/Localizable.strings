@@ -51,6 +51,11 @@
 
 "alert.delete.title" = "Vous êtes sûr de vouloir supprimer le traqueur?";
 
+"statistics.bestPeriod.title" = "Meilleure période";
+"statistics.perfectDays.title" = "Jours parfaits";
+"statistics.completedTrackers.title" = "Traqueurs terminés";
+"statistics.averageValue.title" = "Valeur moyenne";
+
 "monday" = "Lundi";
 "tuesday" = "Mardi";
 "wednesday" = "Mercredi";

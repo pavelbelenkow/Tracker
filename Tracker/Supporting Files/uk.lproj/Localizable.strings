@@ -51,6 +51,11 @@
 
 "alert.delete.title" = "Впевнені, що хочете видалити трекер?";
 
+"statistics.bestPeriod.title" = "Найкращий період";
+"statistics.perfectDays.title" = "Ідеальні дні";
+"statistics.completedTrackers.title" = "Трекерів завершено";
+"statistics.averageValue.title" = "Середнє значення";
+
 "monday" = "Понеділок";
 "tuesday" = "Вівторок";
 "wednesday" = "Середа";

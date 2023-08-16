@@ -51,6 +51,11 @@
 
 "alert.delete.title" = "Sure you want to delete the tracker?";
 
+"statistics.bestPeriod.title" = "Best period";
+"statistics.perfectDays.title" = "Perfect days";
+"statistics.completedTrackers.title" = "Trackers completed";
+"statistics.averageValue.title" = "Average value";
+
 "monday" = "Monday";
 "tuesday" = "Tuesday";
 "wednesday" = "Wednesday";
