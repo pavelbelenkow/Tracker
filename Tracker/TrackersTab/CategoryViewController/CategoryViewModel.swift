@@ -44,13 +44,17 @@ extension CategoryViewModel {
         }
     }
     
-    func getSelectedCategory(from indexPath: IndexPath?) {
+    func getSelectedCategory(from indexPath: IndexPath?) -> TrackerCategory? {
         selectedIndexPath = indexPath
         
-        let categories = listOfCategories
-        let categoryTitle = categories[indexPath?.row ?? 0].title
+        guard let indexPath else { return nil }
         
-        didSelectCategory?(categoryTitle, indexPath)
+        let categories = listOfCategories
+        let selectedCategory = categories[indexPath.row]
+        
+        didSelectCategory?(selectedCategory.title, indexPath)
+        
+        return selectedCategory
     }
     
     func add(category: TrackerCategory) {

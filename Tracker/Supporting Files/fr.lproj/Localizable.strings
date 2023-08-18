@@ -1,0 +1,74 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Pavel Belenkow on 04.08.2023.
+  
+*/
+
+"onboardingFirstLabel.title" = "Ne suivez que ce que vous voulez suivre";
+"onboardingSecondLabel.title" = "Même s'il ne s'agit pas de litres d'eau et de yoga";
+"symbolsConstraintLabel.title" = "Limite de 38 caractères";
+
+"trackers.title" = "Traqueurs";
+"statistics.title" = "Statistique";
+"category.title" = "Catégorie";
+"schedule.title" = "Horaire";
+"emoji.title" = "Émoji";
+"color.title" = "Couleur";
+
+"navBar.newTracker.title" = "Création d'un traqueur";
+"navBar.newRegularEvent.title" = "Une nouvelle habitude";
+"navBar.newIrregularEvent.title" = "Nouvel événement irrégulier";
+"navBar.editRegularEvent.title" = "Édition d'habitudes";
+"navBar.editIrregularEvent.title" = "Édition d'un événement irrégulier";
+"navBar.newCategory.title" = "Nouvelle catégorie";
+
+"searchBar.placeholder.title" = "Recherche";
+"textField.tracker.title" = "Saisir le titre du traqueur";
+"textField.category.title" = "Saisir le titre la catégorie";
+ 
+"placeholder.emptyTrackers.title" = "Qu'allons-nous traquer?";
+"placeholder.emptyStatistics.title" = "Rien à analyser pour l'instant";
+"placeholder.emptyCategories.title" = "Les habitudes et les événements peuvent être combinés dans le sens";
+"placeholder.nothingFound.title" = "Rien trouvé";
+
+"button.onboarding.title" = "C'est de la technologie!";
+"button.filters.title" = "Filtres";
+"button.regularEvent.title" = "Habitude";
+"button.irregularEvent.title" = "Événement irrégulier";
+"button.cancel.title" = "Annuler";
+"button.create.title" = "Créer";
+"button.save.title" = "Enregistrer";
+"button.addCategory.title" = "Ajouter une catégorie";
+"button.confirm.title" = "Fait";
+
+"action.pin.title" = "Épingle";
+"action.unpin.title" = "Détacher";
+"action.edit.title" = "Éditer";
+"action.delete.title" = "Supprimer";
+"action.cancel.title" = "Annuler";
+
+"alert.delete.title" = "Vous êtes sûr de vouloir supprimer le traqueur?";
+
+"statistics.bestPeriod.title" = "Meilleure période";
+"statistics.perfectDays.title" = "Jours parfaits";
+"statistics.completedTrackers.title" = "Traqueurs terminés";
+"statistics.averageValue.title" = "Valeur moyenne";
+
+"monday" = "Lundi";
+"tuesday" = "Mardi";
+"wednesday" = "Mercredi";
+"thursday" = "Jeudi";
+"friday" = "Vendredi";
+"saturday" = "Samedi";
+"sunday" = "Dimanche";
+
+"mon" = "Lun";
+"tue" = "Mar";
+"wed" = "Mer";
+"thu" = "Jeu";
+"fri" = "Ven";
+"sat" = "Sam";
+"sun" = "Dim";
+"everyDay" = "Tous les jours";

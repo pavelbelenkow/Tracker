@@ -11,9 +11,15 @@ import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
     func getSelectedDate() -> Date
+    func isPinnedTracker(by trackerId: UUID) -> Bool
     func reloadTrackersWithCategory()
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    func updateTracker(_ tracker: Tracker, with completedDays: Int)
+}
+
+protocol ContextMenuInteractionDelegate: AnyObject {
+    func contextMenuConfiguration(for trackerId: UUID) -> UIContextMenuConfiguration?
 }
 
 // MARK: - CollectionViewCell class
@@ -40,6 +46,13 @@ final class TrackerCell: UICollectionViewCell {
         label.clipsToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private lazy var pinImageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage.TrackerIcon.pin
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private lazy var trackerTitleLabel: UILabel = {
@@ -89,12 +102,20 @@ final class TrackerCell: UICollectionViewCell {
         return button
     }()
     
+    private lazy var contextMenuInteraction: UIContextMenuInteraction = {
+        let interaction = UIContextMenuInteraction(delegate: self)
+        return interaction
+    }()
+    
+    private let analyticsService = AnalyticsService()
+    
     private let currentDate: Date? = nil
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
     private var indexPath: IndexPath?
     
     weak var delegate: TrackerCellDelegate?
+    weak var contextMenuDelegate: ContextMenuInteractionDelegate?
 }
 
 // MARK: - Add Subviews
@@ -105,6 +126,7 @@ private extension TrackerCell {
         addTrackerView()
         addStackView()
         addEmojiLabel()
+        addPinImageView()
         addTrackerTitleLabel()
         addCounterDayLabel()
         addAppendDayButton()
@@ -142,6 +164,17 @@ private extension TrackerCell {
         ])
     }
     
+    func addPinImageView() {
+        trackerView.addSubview(pinImageView)
+        
+        NSLayoutConstraint.activate([
+            pinImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -4)
+        ])
+    }
+    
     func addTrackerTitleLabel() {
         trackerView.addSubview(trackerTitleLabel)
         
@@ -171,21 +204,9 @@ private extension TrackerCell {
 
 private extension TrackerCell {
     
-    func getDaysText(_ completedDays: Int) -> String {
-        let lastTwoDigits = completedDays % 100
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
-            return "\(completedDays) дней"
-        } else {
-            switch completedDays % 10 {
-            case 1:
-                return "\(completedDays) день"
-            case 2...4:
-                return "\(completedDays) дня"
-            default:
-                return "\(completedDays) дней"
-            }
-        }
+    func getDaysText(_ number: Int) -> String {
+        let localizedCompletedDays = NSLocalizedString("completedDays", comment: "Number of completed days")
+        return String.localizedStringWithFormat(localizedCompletedDays, number)
     }
     
     func checkCompletedToday() {
@@ -206,7 +227,20 @@ private extension TrackerCell {
         appendDayButton.isEnabled = selectedDate <= currentDate ?? Date()
     }
     
+    func checkPinnedTracker(by id: UUID) {
+        let isPinnedTracker = delegate?.isPinnedTracker(by: id) ?? false
+        pinImageView.isHidden = !isPinnedTracker
+    }
+    
     @objc func appendDayButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "track"
+            ]
+        )
+        
         guard let trackerId, let indexPath else {
             assert(false, "ID not found")
             return
@@ -248,5 +282,18 @@ extension TrackerCell {
         
         checkCompletedToday()
         checkDate()
+        checkPinnedTracker(by: tracker.id)
+        
+        trackerView.addInteraction(contextMenuInteraction)
+    }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let trackerId else { return nil }
+        return contextMenuDelegate?.contextMenuConfiguration(for: trackerId)
     }
 }

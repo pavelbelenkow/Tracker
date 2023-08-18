@@ -20,7 +20,11 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var confirmButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .standardButton, for: "Готово")
+        let localizedTitle = NSLocalizedString(
+            "button.confirm.title",
+            comment: "Title of the button confirming the action of selected days in the schedule screen"
+        )
+        button.configure(with: .standardButton, for: localizedTitle)
         button.backgroundColor = UIColor.TrackerColor.black
         button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         return button
@@ -66,7 +70,11 @@ final class ScheduleViewController: UIViewController {
 private extension ScheduleViewController {
     
     func addTopNavigationLabel() {
-        title = "Расписание"
+        let localizedTitle = NSLocalizedString(
+            "schedule.title",
+            comment: "Title of the schedule screen label in the navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black

@@ -1,0 +1,74 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Pavel Belenkow on 04.08.2023.
+  
+*/
+
+"onboardingFirstLabel.title" = "Відстежуйте лише те, що хочете";
+"onboardingSecondLabel.title" = "Навіть якщо це не літри води і йога";
+"symbolsConstraintLabel.title" = "Обмеження в 38 символів";
+
+"trackers.title" = "Трекери";
+"statistics.title" = "Статистика";
+"category.title" = "Категорія";
+"schedule.title" = "Розклад";
+"emoji.title" = "Емодзі";
+"color.title" = "Цвіт";
+
+"navBar.newTracker.title" = "Створення трекера";
+"navBar.newRegularEvent.title" = "Нова звичка";
+"navBar.newIrregularEvent.title" = "Нова нерегулярна подія";
+"navBar.editRegularEvent.title" = "Редагування звички";
+"navBar.editIrregularEvent.title" = "Редагування нерегулярної події";
+"navBar.newCategory.title" = "Нова категорія";
+
+"searchBar.placeholder.title" = "Пошук";
+"textField.tracker.title" = "Введіть назву трекера";
+"textField.category.title" = "Введіть назву категорії";
+ 
+"placeholder.emptyTrackers.title" = "Що будемо відстежувати?";
+"placeholder.emptyStatistics.title" = "Аналізувати поки нічого";
+"placeholder.emptyCategories.title" = "Звички та події можна об'єднати за змістом";
+"placeholder.nothingFound.title" = "Нічого не знайдено";
+
+"button.onboarding.title" = "Ось це технології!";
+"button.filters.title" = "Фільтри";
+"button.regularEvent.title" = "Звичка";
+"button.irregularEvent.title" = "Нерегулярна подія";
+"button.cancel.title" = "Скасувати";
+"button.create.title" = "Створити";
+"button.save.title" = "Зберегти";
+"button.addCategory.title" = "Додати категорію";
+"button.confirm.title" = "Готово";
+
+"action.pin.title" = "Закріпити";
+"action.unpin.title" = "Відкріпити";
+"action.edit.title" = "Редагувати";
+"action.delete.title" = "Видалити";
+"action.cancel.title" = "Скасувати";
+
+"alert.delete.title" = "Впевнені, що хочете видалити трекер?";
+
+"statistics.bestPeriod.title" = "Найкращий період";
+"statistics.perfectDays.title" = "Ідеальні дні";
+"statistics.completedTrackers.title" = "Трекерів завершено";
+"statistics.averageValue.title" = "Середнє значення";
+
+"monday" = "Понеділок";
+"tuesday" = "Вівторок";
+"wednesday" = "Середа";
+"thursday" = "Четвер";
+"friday" = "П'ятниця";
+"saturday" = "Субота";
+"sunday" = "Неділя";
+
+"mon" = "Пн";
+"tue" = "Вт";
+"wed" = "Ср";
+"thu" = "Чт";
+"fri" = "Пт";
+"sat" = "Сб";
+"sun" = "Нд";
+"everyDay" = "Кожного дня";

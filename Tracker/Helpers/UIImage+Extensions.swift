@@ -21,7 +21,7 @@ extension UIImage {
     enum TrackerImage {
         static let emptyStatistics = UIImage(named: "EmptyStatistics") ?? UIImage(systemName: "eyes")!
         static let emptyTrackers = UIImage(named: "EmptyTrackers") ?? UIImage(systemName: "wand.and.stars")!
-        static let notFounded = UIImage(named: "NotFounded") ?? UIImage(systemName: "eyeglasses")!
+        static let nothingFound = UIImage(named: "NothingFound") ?? UIImage(systemName: "eyeglasses")!
         static let onboardingFirstPage = UIImage(named: "OnboardingBackground1")
         static let onboardingSecondPage = UIImage(named: "OnboardingBackground2")
     }

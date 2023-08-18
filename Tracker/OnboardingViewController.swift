@@ -10,9 +10,18 @@ import UIKit
 // MARK: - Constants enum
 
 private enum Constants {
-    static let firstPageTitle = "Отслеживайте только то, что хотите"
-    static let secondPageTitle = "Даже если это не литры воды и йога"
-    static let trackersScreenButtonTitle = "Вот это технологии!"
+    static let firstPageTitle = NSLocalizedString(
+        "onboardingFirstLabel.title",
+        comment: "Title of the first onboarding page"
+    )
+    static let secondPageTitle = NSLocalizedString(
+        "onboardingSecondLabel.title",
+        comment: "Title of the second onboarding page"
+    )
+    static let trackersScreenButtonTitle = NSLocalizedString(
+        "button.onboarding.title",
+        comment: "Title of the button that switches to tracker screen"
+    )
 }
 
 //MARK: - OnboardingViewController Class

@@ -57,11 +57,15 @@ final class TrackersViewController: UIViewController {
     
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .system)
+        let localizedTitle = NSLocalizedString(
+            "button.filters.title",
+            comment: "Title of the tracker filtering button"
+        )
         button.backgroundColor = UIColor.TrackerColor.blue
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
         button.tintColor = UIColor.TrackerColor.white
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(localizedTitle, for: .normal)
         button.titleLabel?.font = UIFont.TrackerFont.regular17
         button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
         button.isHidden = true
@@ -72,24 +76,45 @@ final class TrackersViewController: UIViewController {
     private lazy var placeholderView: UIView = {
         PlaceholderView(
             image: UIImage.TrackerImage.emptyTrackers,
-            title: "Что будем отслеживать?"
+            title: NSLocalizedString(
+                "placeholder.emptyTrackers.title",
+                comment: "Title of the state with empty trackers"
+            )
         )
     }()
     
     private lazy var filteredPlaceholderView: UIView = {
         PlaceholderView(
-            image: UIImage.TrackerImage.notFounded,
-            title: "Ничего не найдено"
+            image: UIImage.TrackerImage.nothingFound,
+            title: NSLocalizedString(
+                "placeholder.nothingFound.title",
+                comment: "Title of the state with empty filtered trackers"
+            )
         )
     }()
     
-    private let trackerStore: TrackerStoreProtocol = TrackerStore()
-    private let trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
-    private let trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
+    private let trackerStore: TrackerStoreProtocol
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
+    
+    private let analyticsService = AnalyticsService()
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
+    
+    // MARK: - Initializers
+    
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()) {
+        self.trackerStore = TrackerStore()
+        self.trackerCategoryStore = trackerCategoryStore
+        self.trackerRecordStore = TrackerRecordStore()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
     
@@ -102,6 +127,16 @@ final class TrackersViewController: UIViewController {
         addSubviews()
         reloadData()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analyticsService.report(event: "open", params: ["screen" : "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
+    }
 }
 
 // MARK: - Add Subviews
@@ -111,8 +146,8 @@ private extension TrackersViewController {
     func addSubviews() {
         addNavigationBar()
         addSearchTrackersTextField()
-        addFilterButton()
         addTrackersCollectionView()
+        addFilterButton()
         addPlaceholderView(placeholderView)
     }
     
@@ -120,7 +155,11 @@ private extension TrackersViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        title = "Трекеры"
+        let localizedTitle = NSLocalizedString(
+            "trackers.title",
+            comment: "Title of the trackers on the navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [
             .font: UIFont.TrackerFont.bold34,
@@ -145,7 +184,7 @@ private extension TrackersViewController {
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 34),
-            collectionView.bottomAnchor.constraint(equalTo: filterButton.topAnchor, constant: -16),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
@@ -236,6 +275,136 @@ private extension TrackersViewController {
         updatePlaceholderViews()
         collectionView.reloadData()
     }
+    
+    func presentTrackerViewController(
+        for tracker: Tracker,
+        with category: TrackerCategory?,
+        isTrackerCompleteToday: Bool
+    ) {
+        let isRegular = tracker.schedule != Weekday.allCases ? true : false
+        
+        let viewController = CreateTrackerViewController(
+            tracker: tracker,
+            category: category,
+            isCompletedToday: isTrackerCompleteToday,
+            isRegular: isRegular,
+            isEditViewController: true
+        )
+        viewController.delegate = self
+        
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
+    }
+    
+    func presentDeleteAlert(
+        title: String,
+        message: String?,
+        deleteActionTitle: String,
+        cancelActionTitle: String,
+        deleteActionHandler: @escaping () -> Void
+    ) {
+        let deleteAction = UIAlertAction(
+            title: deleteActionTitle,
+            style: .destructive,
+            handler: { _ in deleteActionHandler() }
+        )
+        let cancelAction = UIAlertAction(title: cancelActionTitle, style: .cancel)
+
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .actionSheet
+        )
+
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true)
+    }
+    
+    func pinTracker(by id: UUID) {
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            try trackerStore.pinTracker(tracker)
+            reloadData()
+        } catch {
+            assertionFailure("Failed to pin tracker with \(error)")
+        }
+    }
+    
+    func unpinTracker(by id: UUID) {
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            try trackerStore.unpinTracker(tracker)
+            reloadData()
+        } catch {
+            assertionFailure("Failed to unpin tracker with \(error)")
+        }
+    }
+    
+    func editTracker(by id: UUID) {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "edit"
+            ]
+        )
+        
+        do {
+            let tracker = try trackerStore.getTracker(by: id)
+            let trackerCategory = categories.first(where: { $0.trackers.contains(where: { $0.id == id }) })
+            let isTrackerCompletedToday = isTrackerCompletedToday(id: id, tracker: tracker)
+            
+            presentTrackerViewController(
+                for: tracker,
+                with: trackerCategory,
+                isTrackerCompleteToday: isTrackerCompletedToday
+            )
+        } catch {
+            assertionFailure("Failed to edit tracker with \(error)")
+        }
+    }
+    
+    func deleteTracker(by id: UUID) {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "delete"
+            ]
+        )
+        
+        let localizedAlertTitle = NSLocalizedString(
+            "alert.delete.title",
+            comment: "Title of the tracker deletion alert"
+        )
+        let localizedDeleteTitle = NSLocalizedString(
+            "action.delete.title",
+            comment: "Title of the deletion action in the tracker deletion alert"
+        )
+        let localizedCancelTitle = NSLocalizedString(
+            "action.cancel.title",
+            comment: "Title of the cancel action in the tracker deletion alert"
+        )
+        
+        presentDeleteAlert(
+            title: localizedAlertTitle,
+            message: nil,
+            deleteActionTitle: localizedDeleteTitle,
+            cancelActionTitle: localizedCancelTitle
+        ) { [weak self] in
+            guard let self else { return }
+            
+            do {
+                let tracker = try self.trackerStore.getTracker(by: id)
+                try self.trackerStore.deleteTracker(tracker)
+                reloadData()
+            } catch {
+                assertionFailure("Failed to delete tracker with \(error)")
+            }
+        }
+    }
 }
 
 // MARK: - Objective-C methods
@@ -243,6 +412,14 @@ private extension TrackersViewController {
 private extension TrackersViewController {
     
     @objc func addTrackerButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "add_track"
+            ]
+        )
+        
         let trackerTypeViewController = TrackerTypeViewController()
         trackerTypeViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: trackerTypeViewController)
@@ -262,6 +439,13 @@ private extension TrackersViewController {
     }
     
     @objc func filterButtonTapped() {
+        analyticsService.report(
+            event: "click",
+            params: [
+                "screen" : "Main",
+                "item" : "filter"
+            ]
+        )
         print("Filter button tapped")
     }
 }
@@ -338,6 +522,10 @@ extension TrackersViewController: TrackerCellDelegate {
         return selectedDate
     }
     
+    func isPinnedTracker(by trackerId: UUID) -> Bool {
+        trackerStore.isTrackerPinned(by: trackerId)
+    }
+    
     func reloadTrackersWithCategory() {
         reloadData()
     }
@@ -353,6 +541,80 @@ extension TrackersViewController: TrackerCellDelegate {
         try? trackerRecordStore.deleteRecord(with: trackerRecord.trackerId, by: trackerRecord.date)
         collectionView.reloadItems(at: [indexPath])
     }
+    
+    func updateTracker(_ tracker: Tracker, with completedDays: Int) {
+        let trackerRecords = try? trackerRecordStore.fetchRecords(for: tracker)
+        let trackerRecordDate = trackerRecords?.first(where: { $0.trackerId == tracker.id })
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.id, tracker: tracker)
+        
+        if tracker.completedDays != completedDays {
+            if isCompletedToday {
+                try? trackerRecordStore.deleteRecord(with: tracker.id, by: trackerRecordDate?.date ?? Date())
+            } else {
+                try? trackerRecordStore.addRecord(with: tracker.id, by: trackerRecordDate?.date ?? Date())
+            }
+        }
+    }
+}
+
+// MARK: - ContextMenuInteractionDelegate methods
+
+extension TrackersViewController: ContextMenuInteractionDelegate {
+    
+    private func pinAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.pin.title",
+            comment: "Title of the pinning action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.pinTracker(by: trackerId)
+        }
+    }
+    
+    private func unpinAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.unpin.title",
+            comment: "Title of the unpinning action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.unpinTracker(by: trackerId)
+        }
+    }
+    
+    private func editAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.edit.title",
+            comment: "Title of the editing action in the tracker context menu"
+        )
+        return UIAction(title: title) { [weak self] _ in
+            self?.editTracker(by: trackerId)
+        }
+    }
+    
+    private func deleteAction(for trackerId: UUID) -> UIAction {
+        let title = NSLocalizedString(
+            "action.delete.title",
+            comment: "Title of the deletion action in the tracker context menu"
+        )
+        return UIAction(title: title, attributes: [.destructive]) { [weak self] _ in
+            self?.deleteTracker(by: trackerId)
+        }
+    }
+    
+    func contextMenuConfiguration(for trackerId: UUID) -> UIContextMenuConfiguration? {
+        let isTrackerPinned = trackerStore.isTrackerPinned(by: trackerId)
+        
+        let pinAction = pinAction(for: trackerId)
+        let unpinAction = unpinAction(for: trackerId)
+        let editAction = editAction(for: trackerId)
+        let deleteAction = deleteAction(for: trackerId)
+        
+        let menuItems = isTrackerPinned ? [unpinAction, editAction, deleteAction] : [pinAction, editAction, deleteAction]
+        
+        let menu = UIMenu(children: menuItems)
+        
+        return UIContextMenuConfiguration(actionProvider: { _ in menu })
+    }
 }
 
 // MARK: - TrackerStoreDelegate methods
@@ -363,6 +625,16 @@ extension TrackersViewController: TrackerStoreDelegate {
         collectionView.performBatchUpdates {
             collectionView.insertSections(update.insertedSections)
             collectionView.insertItems(at: update.insertedIndexPaths)
+            
+            collectionView.deleteSections(update.deletedSections)
+            collectionView.deleteItems(at: update.deletedIndexPaths)
+            
+            collectionView.reloadSections(update.updatedSections)
+            collectionView.reloadItems(at: update.updatedIndexPaths)
+            
+            for move in update.movedIndexPaths {
+                collectionView.moveItem(at: move.oldIndexPath, to: move.newIndexPath)
+            }
         }
     }
 }

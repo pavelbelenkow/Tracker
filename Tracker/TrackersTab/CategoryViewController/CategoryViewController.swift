@@ -20,7 +20,11 @@ final class CategoryViewController: UIViewController {
     
     private lazy var appendCategoryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.configure(with: .standardButton, for: "Добавить категорию")
+        let localizedTitle = NSLocalizedString(
+            "button.addCategory.title",
+            comment: "Title of the button that adds a new category"
+        )
+        button.configure(with: .standardButton, for: localizedTitle)
         button.addTarget(self, action: #selector(appendCategoryButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -28,7 +32,10 @@ final class CategoryViewController: UIViewController {
     private lazy var placeholderView: UIView = {
         PlaceholderView(
             image: UIImage.TrackerImage.emptyTrackers,
-            title: "Привычки и события можно объединить по смыслу"
+            title: NSLocalizedString(
+                "placeholder.emptyCategories.title",
+                comment: "Title of the label in the placeholder for empty number of categories"
+            )
         )
     }()
     
@@ -50,6 +57,14 @@ final class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
+        
+        NotificationCenter.default
+            .addObserver(
+                self,
+                selector: #selector(dismissViewController),
+                name: Notification.Name("dismissCategoryViewController"),
+                object: nil
+            )
         
         viewModel.$listOfCategories.bind { [weak self] _ in
             self?.bind()
@@ -73,7 +88,11 @@ private extension CategoryViewController {
     }
     
     func addTopNavigationLabel() {
-        title = "Категория"
+        let localizedTitle = NSLocalizedString(
+            "category.title",
+            comment: "Title of the categories screen label in the navigation bar"
+        )
+        title = localizedTitle
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.TrackerFont.medium16,
             .foregroundColor: UIColor.TrackerColor.black
@@ -138,5 +157,9 @@ private extension CategoryViewController {
         let createCategoryViewController = CreateCategoryViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: createCategoryViewController)
         present(navigationController, animated: true)
+    }
+    
+    @objc func dismissViewController() {
+        dismiss(animated: true)
     }
 }

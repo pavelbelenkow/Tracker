@@ -15,7 +15,18 @@ final class CreateTrackerCollectionView: UICollectionView {
     
     private let emojies: [TrackerEmoji] = TrackerEmoji.allCases
     private let colors: [UIColor] = UIColor.TrackerColor.colorSelections()
-    private let headers: [String] = ["Emoji", "Цвет"]
+    private let headers: [String] = [
+        NSLocalizedString(
+            "emoji.title",
+            comment: "Title of the section header with emojis in the collection view"
+        ),
+        NSLocalizedString(
+            "color.title",
+            comment: "Title of the section header with colors in the collection view"
+        )
+    ]
+    
+    private let colorMarshalling = UIColorMarshalling()
     private let params = GeometricParams(
         cellCount: 6,
         leftInset: 18,
@@ -87,6 +98,8 @@ extension CreateTrackerCollectionView: UICollectionViewDataSource {
             }
             
             let emoji = emojies[indexPath.row].rawValue
+            selectedEmoji = selectionDelegate?.getSelectedEmoji()
+            
             let isSelected = selectedEmoji == emoji
             emojiCell.configure(with: emoji, isSelected: isSelected)
             
@@ -103,7 +116,12 @@ extension CreateTrackerCollectionView: UICollectionViewDataSource {
             }
             
             let color = colors[indexPath.row]
-            let isSelected = selectedColor == color
+            selectedColor = selectionDelegate?.getSelectedColor()
+            
+            let colorString = colorMarshalling.getHexString(from: color)
+            let selectedColorString = colorMarshalling.getHexString(from: selectedColor)
+            
+            let isSelected = selectedColorString == colorString
             colorCell.configure(with: color, isSelected: isSelected)
             
             return colorCell
