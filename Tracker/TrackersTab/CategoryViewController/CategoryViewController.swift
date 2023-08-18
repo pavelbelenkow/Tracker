@@ -58,6 +58,14 @@ final class CategoryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.TrackerColor.white
         
+        NotificationCenter.default
+            .addObserver(
+                self,
+                selector: #selector(dismissViewController),
+                name: Notification.Name("dismissCategoryViewController"),
+                object: nil
+            )
+        
         viewModel.$listOfCategories.bind { [weak self] _ in
             self?.bind()
         }
@@ -149,5 +157,9 @@ private extension CategoryViewController {
         let createCategoryViewController = CreateCategoryViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: createCategoryViewController)
         present(navigationController, animated: true)
+    }
+    
+    @objc func dismissViewController() {
+        dismiss(animated: true)
     }
 }

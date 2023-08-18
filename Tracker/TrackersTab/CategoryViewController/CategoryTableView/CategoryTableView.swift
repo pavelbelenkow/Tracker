@@ -94,6 +94,12 @@ extension CategoryTableView: UITableViewDelegate {
         if let selectedCategory = viewModel.getSelectedCategory(from: indexPath) {
             viewModel.didSelectCategory?(selectedCategory.title, viewModel.selectedIndexPath)
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+            
+            NotificationCenter.default
+                .post(
+                    name: Notification.Name("dismissCategoryViewController"),
+                    object: nil
+                )
         }
     }
 }
